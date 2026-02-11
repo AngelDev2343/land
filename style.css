@@ -1,0 +1,73 @@
+@font-face {
+    font-family: 'Inter';
+    src: url(fuentes/INTER.ttf);
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    background: #05DFFC;
+    background: linear-gradient(90deg, rgb(0, 188, 212) 0%, rgba(29, 119, 253, 1) 23%, rgba(29, 119, 253, 1) 50%, rgba(29, 119, 253, 1) 76%, rgb(0, 188, 212) 100%);
+    font-family: 'Inter';
+    padding: 0;
+    margin: 0;
+}
+
+.tarjeta {
+    display: flex;
+    flex-direction: row;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 15px;
+    width: 380px;
+    height: 140px;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border-radius: 15px;
+    margin-top: 30px;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.tarjeta img {
+    width: 35%;
+    border-radius: 50%;
+    border: rgb(233, 233, 233) 3px solid;
+}
+
+.sobre-mi {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.12);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 40px;
+    padding-right: 40px;
+    width: 800px;
+    height: 280px;
+    gap: 20px;
+    justify-content: center;
+    margin: 0 auto;
+    border-radius: 15px;
+    margin-top: 2.5%;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.sobre-mi h1 {
+    margin: 0px;
+    text-align: left;
+}
+
+.sobre-mi p {
+    margin: 0px;
+    line-height: 1.3;
+}
