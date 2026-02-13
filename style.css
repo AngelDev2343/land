@@ -43,7 +43,6 @@ body {
     display: flex;
     flex-direction: column;
     background: rgba(255, 255, 255, 0.12);
-
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.2);
@@ -70,4 +69,28 @@ body {
 .sobre-mi p {
     margin: 0px;
     line-height: 1.3;
+}
+
+.proyecto1 {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    gap: 24px;
+    color: white;
+    margin: 0 auto;
+    margin-top: 1.3%;
+}
+
+.proyecto1 img {
+    border-radius: 25px;
+    border: 8px outset #271cc171;
+    width: 55%;
+    position: relative;
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+
+.proyectos .title {
+    text-align: center;
+    color: white;
+    font-size: 42px;
 }
