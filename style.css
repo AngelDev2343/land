@@ -218,3 +218,16 @@ body {
         transition: none;
     }
 }
+
+.acciones img {
+    width: 16px;
+    padding: 6px;
+}
+
+.sec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 50%;
+}
