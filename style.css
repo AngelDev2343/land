@@ -129,6 +129,8 @@ body {
     display: none;
 }
 
+/* responsive pcs pequeñas*/
+
 @media (max-width: 1400px) {
     .proyecto1 img {
         margin-top: 2px;
@@ -151,3 +153,66 @@ body {
     }
 }
 
+/* Animación de aparición suave para hero y sobre-mi */
+.tarjeta,
+.sobre-mi {
+    opacity: 0;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.tarjeta {
+    animation-delay: 0.2s;
+}
+
+.sobre-mi {
+    animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de scroll desde los lados para proyectos */
+.proyecto1,
+.proyecto2 {
+    opacity: 0;
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.proyecto1 {
+    transform: translateX(-60px);
+}
+
+.proyecto2 {
+    transform: translateX(60px);
+}
+
+.proyecto1.visible,
+.proyecto2.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Respetar preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    .tarjeta,
+    .sobre-mi {
+        opacity: 1;
+        animation: none;
+        transform: none;
+    }
+    
+    .proyecto1,
+    .proyecto2 {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
