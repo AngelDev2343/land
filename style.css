@@ -131,9 +131,13 @@ body {
     display: none;
 }
 
+.proyectos {
+    margin-bottom: 8%;
+}
+
 /* responsive pcs pequeñas*/
 
-@media (max-width: 1400px) {
+@media (max-width: 1600px) {
     .proyecto1 img {
         margin-top: 2px;
     }
@@ -230,5 +234,111 @@ body {
     align-items: center;
     gap: 20px;
     width: 70%;
+}
 
+.skills h1 {
+    text-align: center;
+    color: white;
+    font-size: 38px;
+    margin: 0;
+    margin-bottom: 0px;
+    margin-top: 25px;
+}
+
+.skills {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    width: 80%;
+    height: 140px;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border-radius: 15px;
+    margin-top: 30px;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 50px;
+}
+
+
+/* Carrusel */
+
+.carrusel {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 50px 0;
+    padding-bottom: 100px;
+    height: 40px;
+    align-items: center;
+    
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+  
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+}
+
+.track {
+    display: flex;
+    width: max-content;
+    animation: scroll 18s linear infinite;
+    gap: 30px;
+    will-change: transform;
+}
+
+.grupo {
+    display: flex;
+    gap: 30px;
+    flex-shrink: 0;
+}
+
+@keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+}
+
+.track:hover {
+    animation-play-state: paused;
+}
+
+.track img {
+    transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    width: 85px;
+    opacity: 1;
+    display: block;
+}
+
+/* Cuando el track tiene hover, todas las imágenes bajan opacidad */
+.track:hover img {
+    opacity: 0.3;
+}
+
+/* Excepto la que está siendo hovereada directamente */
+.track:hover img:hover {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px white);
+    transform: scale(1.1);
+    cursor: pointer;
+    transform: rotate(-5deg);
 }
