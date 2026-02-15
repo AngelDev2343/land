@@ -190,9 +190,49 @@
         </div>
     </div>
 
-    <div>
-        <h1>´</h1>
+    <div class="call-to-action">
+        <img src="imagenes/anim.png" alt="Personaje Animado">
+        <div class="ing">
+            <h1>¿Tienes una idea en mente?</h1>
+            <p>Cuéntame tu idea y te ayudo a convertirla en una solución funcional y profesional.</p>
+
+            <div class="btns">
+                <a href="#" id="copiar"><img src="gifs/icons8-mail.gif" alt="Mail Icon" width="60px" style="border-radius: 50%;">E-Mail</a>
+                <a href="https://www.github.com/AngelDev2343" target="_blank"><img src="gifs/github.gif" alt="GitHub Icon" width="60px" style="border-radius: 50%;">GitHub</a>
+                <a href="https://www.instagram.com/angl.perz/" target="_blank"><img src="gifs/instagram.gif" alt="IG Icon" width="60px" style="border-radius: 50%;">Instagram</a>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        <p>© 2026 Angel Salinas Pérez — Desarrollador Web Full-Stack</p>
+    </footer>
+
+    <script>
+        document.getElementById("copiar").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            navigator.clipboard.writeText("23angelsperez@gmail.com");
+
+            this.innerHTML = `
+                    <img src="gifs/icons8-mail.gif" 
+                        alt="Mail Icon" 
+                        width="60px" 
+                        style="border-radius: 50%;">
+                    Copiado
+                `;
+
+            setTimeout(() => {
+                this.innerHTML = `
+                    <img src="gifs/icons8-mail.gif" 
+                        alt="Mail Icon" 
+                        width="60px" 
+                        style="border-radius: 50%;">
+                    E-Mail
+                `;
+            }, 2000);
+        })
+    </script>
 
     <script src="scroll.js" defer></script>
 </body>

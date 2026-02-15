@@ -5,6 +5,20 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'KarmaF';
+    src: url(fuentes/Karma\ Future.otf);
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KarmaS';
+    src: url(fuentes/Karma\ Suture.otf);
+    font-weight: 400;
+    font-style: normal;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -341,4 +355,84 @@ body {
     transform: scale(1.1);
     cursor: pointer;
     transform: rotate(-5deg);
+}
+
+.call-to-action {
+    background-color: transparent;
+    background-image: url("gifs/matrix.gif");
+    width: 90%;
+    margin: 0 auto;
+    padding: 18px;
+    padding-bottom: 0;
+    margin-top: 5%;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    flex-direction: row;
+}
+
+.ing {
+    width: max-content;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.ing h1 {
+    font-family: 'Karmaf';
+    font-size: 70px;
+    font-weight: 200;
+    margin: 0px;
+    margin-bottom: 3%;
+    margin-top: 3%;
+}
+
+.ing p {
+    font-family: 'KarmaS';
+    font-size: 24px;
+    font-weight: 200;
+}
+
+.btns a {
+    background: rgba(255, 255, 255, 0.377);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-decoration: none;
+    color: white;
+    font-family: 'KarmaS';
+    font-size: 24px;
+    font-weight: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btns a:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.btns {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+footer {
+    width: 100%;
+    padding: 30px 0;
+    margin-top: 80px;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
