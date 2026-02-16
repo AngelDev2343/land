@@ -52,7 +52,6 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     overflow-x: hidden;
-    touch-action: none;
 }
 
 /* ============================================
