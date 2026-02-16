@@ -6,6 +6,17 @@
     <title>Mi Portafolio | Angel Salinas Pérez</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="imagenes/portfolio.png" type="image/png">
+    <script>
+        (function() {
+            // Detectar móvil por User Agent
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Si es móvil, redireccionar
+            if (isMobile) {
+                window.location.href = '/MOVIL/index.html';  // <-- CAMBIA ESTO POR TU URL
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="tarjeta">
@@ -239,5 +250,6 @@
     <script src="scroll.js" defer></script>
 </body>
 </html>
+
 
 
