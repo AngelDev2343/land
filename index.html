@@ -241,27 +241,36 @@
         const tooltip = document.createElement('div');
         tooltip.id = 'tooltip';
         document.body.appendChild(tooltip);
-
-        document.querySelectorAll('[data-tooltip]').forEach(el => {
-            el.addEventListener('mouseenter', () => {
+        
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('[data-tooltip]');
+            if (el) {
                 tooltip.textContent = el.dataset.tooltip;
                 tooltip.style.opacity = '1';
-            });
-
-            el.addEventListener('mousemove', (e) => {
                 tooltip.style.left = e.clientX + 14 + 'px';
                 tooltip.style.top  = e.clientY - 32 + 'px';
-            });
-
-            el.addEventListener('mouseleave', () => {
+            }
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (tooltip.style.opacity === '1') {
+                tooltip.style.left = e.clientX + 14 + 'px';
+                tooltip.style.top  = e.clientY - 32 + 'px';
+            }
+        });
+        
+        document.addEventListener('mouseout', (e) => {
+            const el = e.target.closest('[data-tooltip]');
+            if (el) {
                 tooltip.style.opacity = '0';
-            });
+            }
         });
     </script>
 
     <script src="scroll.js" defer></script>
 </body>
 </html>
+
 
 
 
