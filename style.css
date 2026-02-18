@@ -72,8 +72,6 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.2);
-    padding-bottom: 15px;
-    padding-top: 15px;
     padding-left: 40px;
     padding-right: 40px;
     width: 800px;
@@ -452,4 +450,5 @@ footer {
     transition: opacity 0.2s ease;
     z-index: 9999;
 }
+
 
