@@ -9,10 +9,10 @@
     <script>
         (function() {
             // Detectar móvil por User Agent
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isPC = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             // Si es móvil, redireccionar
-            if (isMobile) {
+            if (isPC) {
                 window.location.href = '/land/MOVIL/index.html';
             }
         })();
