@@ -1,6 +1,5 @@
 /* ============================================
    CSS EXCLUSIVO PARA DISPOSITIVOS MÓVILES
-   Sin código para PC ni tablets
    ============================================ */
 
    @font-face {
@@ -241,9 +240,6 @@ body {
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-.texto-largo {
-    display: none;
-}
 
 .texto-corto {
     display: block;
