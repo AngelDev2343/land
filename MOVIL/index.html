@@ -10,15 +10,19 @@
         (function() {
             const DESKTOP_URL = '/land/index.html';
             const BREAKPOINT = 950;
+            let timer;
     
             if (window.innerWidth >= BREAKPOINT) {
                 window.location.replace(DESKTOP_URL);
             }
     
             window.addEventListener('resize', () => {
-                if (window.innerWidth >= BREAKPOINT) {
-                    window.location.replace(DESKTOP_URL);
-                }
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    if (window.innerWidth >= BREAKPOINT) {
+                        window.location.replace(DESKTOP_URL);
+                    }
+                }, 300);
             });
         })();
     </script>
@@ -233,6 +237,7 @@
     <script src="scroll.js" defer></script>
 </body>
 </html>
+
 
 
 
