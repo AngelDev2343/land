@@ -10,15 +10,19 @@
         (function() {
             const MOBILE_URL = '/land/MOVIL/index.html';
             const BREAKPOINT = 900;
+            let timer;
     
             if (window.innerWidth <= BREAKPOINT) {
                 window.location.replace(MOBILE_URL);
             }
     
             window.addEventListener('resize', () => {
-                if (window.innerWidth <= BREAKPOINT) {
-                    window.location.replace(MOBILE_URL);
-                }
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    if (window.innerWidth <= BREAKPOINT) {
+                        window.location.replace(MOBILE_URL);
+                    }
+                }, 300);
             });
         })();
     </script>
@@ -304,4 +308,5 @@
     <script src="scroll.js" defer></script>
 </body>
 </html>
+
 
