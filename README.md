@@ -8,7 +8,7 @@
 
 <a target="_blank" href="https://icons8.com/icon/4MhUS4CzoLbx/github">GitHub</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
-<a href="https://www.flaticon.com/free-icons/popular" title="popular icons">Popular icons created by Indygo - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/email" title="email icons">Email icons created by Fathema Khanom - Flaticon</a>
 
 <a target="_blank" href="https://icons8.com/icon/mXcvtsj8e1Ug/mail">Mail</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
