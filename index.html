@@ -8,13 +8,22 @@
     <link rel="icon" href="imagenes/portfolio.png" type="image/png">
     <script>
         (function() {
+            const MOBILE_URL = 'https://angeldev2343.github.io/land/MOVIL/index.html';
+            const BREAKPOINT = 900;
+
             // Detectar móvil por User Agent
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            // Si es móvil, redireccionar
-            if (isMobile) {
-                window.location.href = '/land/MOVIL/index.html';
+
+            if (isMobile || window.innerWidth <= BREAKPOINT) {
+                window.location.replace(MOBILE_URL);
             }
+
+            // Escuchar cambios de tamaño de ventana
+            window.addEventListener('resize', () => {
+                if (window.innerWidth <= BREAKPOINT) {
+                    window.location.replace(MOBILE_URL);
+                }
+            });
         })();
     </script>
 </head>
@@ -182,37 +191,37 @@
         <div class="carrusel">
             <div class="track">
                 <div class="grupo">
-                    <img src="imagenes/html.png" alt="html" width="70px" data-tooltip="HTML5">
-                    <img src="imagenes/css.png" alt="css" width="70px" data-tooltip="CSS3">
-                    <img src="imagenes/js.png" alt="js" width="70px" data-tooltip="JavaScript">
-                    <img src="imagenes/php.png" alt="php" width="70px" data-tooltip="PHP">
-                    <img src="imagenes/node.png" alt="node" width="70px" data-tooltip="NodeJS">
-                    <img src="imagenes/MySQL.png" alt="MySQL" width="70px" data-tooltip="MySQL">
-                    <img src="imagenes/django.webp" alt="django" width="70px" data-tooltip="Django">
-                    <img src="imagenes/phpmyadmin.png" alt="phpmyadmin" width="70px" data-tooltip="phpMyAdmin">
-                    <img src="imagenes/xampp.png" alt="xampp" width="70px" data-tooltip="XAMPP">
-                    <img src="imagenes/filezilla.png" alt="filezilla" width="70px" data-tooltip="FileZilla">
-                    <img src="imagenes/visual.png" alt="visual studio code" width="70px" data-tooltip="Visual Studio Code">
-                    <img src="imagenes/python.png" alt="python" width="70px" data-tooltip="Python">
-                    <img src="imagenes/mongodb.png" alt="mongodb" width="70px" data-tooltip="MongoDB">
-                    <img src="imagenes/icons8-fedora-100.png" alt="mongodb" width="70px" data-tooltip="Fedora Linux">
+                    <img src="imagenes/html.png" alt="html" data-tooltip="HTML5">
+                    <img src="imagenes/css.png" alt="css" data-tooltip="CSS3">
+                    <img src="imagenes/js.png" alt="js" data-tooltip="JavaScript">
+                    <img src="imagenes/php.png" alt="php" data-tooltip="PHP">
+                    <img src="imagenes/node.png" alt="node" data-tooltip="NodeJS">
+                    <img src="imagenes/MySQL.png" alt="MySQL" data-tooltip="MySQL">
+                    <img src="imagenes/django.webp" alt="django" data-tooltip="Django">
+                    <img src="imagenes/phpmyadmin.png" alt="phpmyadmin" data-tooltip="phpMyAdmin">
+                    <img src="imagenes/xampp.png" alt="xampp" data-tooltip="XAMPP">
+                    <img src="imagenes/filezilla.png" alt="filezilla" data-tooltip="FileZilla">
+                    <img src="imagenes/visual.png" alt="visual studio code" data-tooltip="Visual Studio Code">
+                    <img src="imagenes/python.png" alt="python" data-tooltip="Python">
+                    <img src="imagenes/mongodb.png" alt="mongodb" data-tooltip="MongoDB">
+                    <img src="imagenes/icons8-fedora-100.png" alt="fedora linux" data-tooltip="Fedora Linux">
                 </div>
 
                 <div class="grupo">
-                    <img src="imagenes/html.png" alt="html" width="70px" data-tooltip="HTML5">
-                    <img src="imagenes/css.png" alt="css" width="70px" data-tooltip="CSS3">
-                    <img src="imagenes/js.png" alt="js" width="70px" data-tooltip="JavaScript">
-                    <img src="imagenes/php.png" alt="php" width="70px" data-tooltip="PHP">
-                    <img src="imagenes/node.png" alt="node" width="70px" data-tooltip="NodeJS">
-                    <img src="imagenes/MySQL.png" alt="MySQL" width="70px" data-tooltip="MySQL">
-                    <img src="imagenes/django.webp" alt="django" width="70px" data-tooltip="Django">
-                    <img src="imagenes/phpmyadmin.png" alt="phpmyadmin" width="70px" data-tooltip="phpMyAdmin">
-                    <img src="imagenes/xampp.png" alt="xampp" width="70px" data-tooltip="XAMPP">
-                    <img src="imagenes/filezilla.png" alt="filezilla" width="70px" data-tooltip="Filezilla">
-                    <img src="imagenes/visual.png" alt="visual studio code" width="70px" data-tooltip="Visual Studio Code">
-                    <img src="imagenes/python.png" alt="python" width="70px" data-tooltip="Python">
-                    <img src="imagenes/mongodb.png" alt="mongodb" width="70px" data-tooltip="MongoDB">
-                    <img src="imagenes/icons8-fedora-100.png" alt="mongodb" width="70px" data-tooltip="Fedora Linux">
+                    <img src="imagenes/html.png" alt="html" data-tooltip="HTML5">
+                    <img src="imagenes/css.png" alt="css" data-tooltip="CSS3">
+                    <img src="imagenes/js.png" alt="js" data-tooltip="JavaScript">
+                    <img src="imagenes/php.png" alt="php" data-tooltip="PHP">
+                    <img src="imagenes/node.png" alt="node" data-tooltip="NodeJS">
+                    <img src="imagenes/MySQL.png" alt="MySQL" data-tooltip="MySQL">
+                    <img src="imagenes/django.webp" alt="django" data-tooltip="Django">
+                    <img src="imagenes/phpmyadmin.png" alt="phpmyadmin" data-tooltip="phpMyAdmin">
+                    <img src="imagenes/xampp.png" alt="xampp" data-tooltip="XAMPP">
+                    <img src="imagenes/filezilla.png" alt="filezilla" data-tooltip="Filezilla">
+                    <img src="imagenes/visual.png" alt="visual studio code" data-tooltip="Visual Studio Code">
+                    <img src="imagenes/python.png" alt="python" data-tooltip="Python">
+                    <img src="imagenes/mongodb.png" alt="mongodb" data-tooltip="MongoDB">
+                    <img src="imagenes/icons8-fedora-100.png" alt="fedora linux" data-tooltip="Fedora Linux">
                 </div>
             </div>
         </div>
@@ -225,9 +234,9 @@
             <p>Cuéntame tu idea y te ayudo a hacerla realidad.</p>
 
             <div class="btns">
-                <a href="#" id="copiar"><img src="gifs/icons8-mail.gif" alt="Mail Icon" width="60px" style="border-radius: 50%;">E-Mail</a>
-                <a href="https://www.github.com/AngelDev2343" target="_blank"><img src="gifs/github.gif" alt="GitHub Icon" width="60px" style="border-radius: 50%;">GitHub</a>
-                <a href="https://www.instagram.com/angl.perz/" target="_blank"><img src="gifs/instagram.gif" alt="IG Icon" width="60px" style="border-radius: 50%;">Instagram</a>
+                <a href="#" id="copiar"><img src="imagenes/mail.png" alt="Mail Icon" class="btn-icon">E-Mail</a>
+                <a href="https://github.com/AngelDev2343" target="_blank"><img src="gifs/github.gif" alt="GitHub Icon" class="btn-icon">GitHub</a>
+                <a href="https://www.instagram.com/angl.perz/" target="_blank"><img src="imagenes/social.png" alt="IG Icon" class="btn-icon">Instagram</a>
             </div>
         </div>
     </div>
@@ -239,27 +248,31 @@
     <script>
         document.getElementById("copiar").addEventListener("click", function(e) {
             e.preventDefault();
+            const email = "23angelsperez@gmail.com";
+            const btn = this;
 
-            navigator.clipboard.writeText("23angelsperez@gmail.com");
+            const restore = () => {
+                btn.innerHTML = `<img src="imagenes/mail.png" alt="Mail Icon" class="btn-icon">E-Mail`;
+            };
 
-            this.innerHTML = `
-                    <img src="gifs/icons8-mail.gif" 
-                        alt="Mail Icon" 
-                        width="60px" 
-                        style="border-radius: 50%;">
-                    Copiado
-                `;
+            const setCopiado = () => {
+                btn.innerHTML = `<img src="imagenes/mail.png" alt="Mail Icon" class="btn-icon">Copiado`;
+                setTimeout(restore, 2000);
+            };
 
-            setTimeout(() => {
-                this.innerHTML = `
-                    <img src="gifs/icons8-mail.gif" 
-                        alt="Mail Icon" 
-                        width="60px" 
-                        style="border-radius: 50%;">
-                    E-Mail
-                `;
-            }, 2000);
-        })
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(email).then(setCopiado).catch(restore);
+            } else {
+                // Fallback para HTTP o navegadores sin clipboard API
+                const ta = document.createElement("textarea");
+                ta.value = email;
+                ta.style.cssText = "position:fixed;opacity:0";
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand("copy"); setCopiado(); } catch { restore(); }
+                document.body.removeChild(ta);
+            }
+        });
     </script>
 
     <script>
@@ -295,13 +308,3 @@
     <script src="scroll.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
