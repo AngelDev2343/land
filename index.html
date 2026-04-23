@@ -95,6 +95,7 @@
     line-height: 1.8;
     overflow-y: auto;
     flex: 1;
+    overflow: hidden;
   }
 
   .boot-line {
@@ -974,7 +975,7 @@
       </div>
       <div class="d-icon" data-app="skills">
         <div class="d-icon-img">⚡</div>
-        <div class="d-icon-label">skills.db</div>
+        <div class="d-icon-label">stack.db</div>
       </div>
       <div class="d-icon" data-app="contact">
         <div class="d-icon-img">📡</div>
@@ -1047,7 +1048,7 @@
     <span>📁</span> Proyectos
   </div>
   <div class="start-menu-item" onclick="openWindow('skills');closeStartMenu()">
-    <span>⚡</span> Skills &amp; Stack
+    <span>⚡</span> Stack &amp; Stack
   </div>
   <div class="start-menu-item" onclick="openWindow('contact');closeStartMenu()">
     <span>📡</span> Contacto
@@ -1094,7 +1095,7 @@ const bootMessages = [
   { t: 'Cargando drivers gráficos [HACKER-GREEN-MODE]...', cl: 'ok' },
   { t: 'Iniciando gestor de ventanas...', cl: 'ok' },
   { t: 'Cargando base de datos de proyectos...', cl: 'ok' },
-  { t: 'Cargando módulo de skills...', cl: 'ok' },
+  { t: 'Cargando módulo de stack...', cl: 'ok' },
   { t: 'Iniciando servidor de contacto...', cl: 'ok' },
   { t: 'Verificando certificados SSL...', cl: 'ok' },
   { t: 'Cargando perfil de usuario: Admin...', cl: 'ok' },
@@ -1306,12 +1307,12 @@ Yo me encargo de hacerlo realidad.</span>
   },
 
   skills: {
-    title: 'skills.db — Stack Tecnológico',
+    title: 'Stack.db — Stack Tecnológico',
     width: 580, height: 500,
     content: () => `
-      <div class="section-title">// SKILLS --list-all</div>
+      <div class="section-title">// STACK --list-all</div>
       <div style="margin-bottom:16px;font-size:12px;color:var(--text-dim)">
-        <span class="prompt">angel@angelos:~$ </span><span class="cmd">query skills WHERE level > 0</span>
+        <span class="prompt">angel@angelos:~$ </span><span class="cmd">query stack WHERE level > 0</span>
       </div>
       <div style="margin-bottom:12px;font-size:11px;color:var(--text-muted);letter-spacing:2px">// FRONTEND</div>
       <div class="skills-grid" style="margin-bottom:20px">
