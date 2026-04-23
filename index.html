@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AngelOS v1.0 — Angel Salinas Pérez</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ════════════════ BOOT SCREEN ════════════════ -->
+<div id="boot-screen" class="screen">
+  <div class="boot-header">AngelOS v1.0</div>
+  <div class="boot-log" id="boot-log"></div>
+  <div class="boot-progress">
+    <div class="boot-progress-bar" id="boot-bar"></div>
+  </div>
+</div>
+
+<!-- ════════════════ LOGIN SCREEN ════════════════ -->
+<div id="login-screen" class="screen hidden">
+  <div class="login-box">
+    <div class="login-os-name">ANGELOS</div>
+    <div class="login-version">VERSION 1.0.0-STABLE // SECURE BOOT</div>
+    <div class="login-avatar">
+      <div class="login-avatar-placeholder">A</div>
+    </div>
+    <div class="login-username">
+      Admin
+      <span>// angel.salinas@angelos:~$</span>
+    </div>
+    <button class="login-btn" id="login-btn">[ INICIAR SESIÓN ]</button>
+    <div class="login-footer">
+      AngelOS — Desarrollador Full-Stack<br>
+      © 2026 Angel Salinas Pérez
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ DESKTOP SCREEN ════════════════ -->
+<div id="desktop-screen" class="screen hidden">
+  <canvas id="matrix-canvas"></canvas>
+
+  <!-- Desktop area -->
+  <div class="desktop-area" id="desktop-area">
+
+    <!-- Desktop icons (all left, wraps to second column if needed) -->
+    <div class="desktop-icons" id="left-icons">
+      <div class="d-icon" data-app="about">
+        <div class="d-icon-img"><img src="https://github.com/AngelDev2343/AngelDev2343/blob/main/Dise%C3%B1o%20sin%20t%C3%ADtulo.png?raw=true" alt="Foto" width="40px" style="border-radius: 5%;"></div>
+        <div class="d-icon-label">about.exe</div>
+      </div>
+      <div class="d-icon" data-app="projects">
+        <div class="d-icon-img">📁</div>
+        <div class="d-icon-label">projects/</div>
+      </div>
+      <div class="d-icon" data-app="skills">
+        <div class="d-icon-img">⚡</div>
+        <div class="d-icon-label">stack.db</div>
+      </div>
+      <div class="d-icon" data-app="contact">
+        <div class="d-icon-img">📡</div>
+        <div class="d-icon-label">contact.sh</div>
+      </div>
+      <div class="d-icon" data-app="terminal">
+        <div class="d-icon-img">&gt;_</div>
+        <div class="d-icon-label">terminal</div>
+      </div>
+      <div class="d-icon" data-app="whyai">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/WhyAI/refs/heads/main/icons/logo512.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">WhyAI</div>
+      </div>
+      <div class="d-icon" data-app="bio3d">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Bio3D/refs/heads/main/logo1.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
+        <div class="d-icon-label">Bio3D</div>
+      </div>
+      <div class="d-icon" data-app="cerimex">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Cerimex/refs/heads/main/img/cerimex-logo.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
+        <div class="d-icon-label">Cerimex</div>
+      </div>
+      <div class="d-icon" data-app="twin">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/TwinMessenger/refs/heads/main/proyect/twin/images/Twin%20Messenger.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">Twin...</div>
+      </div>
+      <div class="d-icon" data-app="fender">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Fender/refs/heads/main/Fender.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">Fender</div>
+      </div>
+      <div class="d-icon" data-app="fluttertool">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/10345744.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">Flutter...</div>
+      </div>
+      <div class="d-icon" data-app="digitalpiano">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/DigitalPiano/refs/heads/main/images/icons/icon512.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">Digital...</div>
+      </div>
+      <div class="d-icon" data-app="marketplaceonly">
+        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/MarketPlaceOnly/refs/heads/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Logo" width="40px"></div>
+        <div class="d-icon-label">Market...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <div class="taskbar-start" id="start-btn" onclick="toggleStartMenu()">
+      <span class="logo">⬡</span>
+      AngelOS
+    </div>
+    <div class="taskbar-apps" id="taskbar-apps"></div>
+    <div class="taskbar-clock" id="clock">
+      <span id="clock-time">00:00:00</span>
+      <span id="clock-date" style="font-size:10px;color:var(--text-muted)"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ START MENU ════════════════ -->
+<div class="start-menu" id="start-menu">
+  <div class="start-menu-header">
+    <h3>ANGELOS v1.0</h3>
+    <p>angel.salinas // Admin</p>
+  </div>
+  <div class="start-menu-item" onclick="openWindow('about');closeStartMenu()">
+    <span>👤</span> Sobre mí
+  </div>
+  <div class="start-menu-item" onclick="openWindow('projects');closeStartMenu()">
+    <span>📁</span> Proyectos
+  </div>
+  <div class="start-menu-item" onclick="openWindow('skills');closeStartMenu()">
+    <span>⚡</span> Stack &amp; Stack
+  </div>
+  <div class="start-menu-item" onclick="openWindow('contact');closeStartMenu()">
+    <span>📡</span> Contacto
+  </div>
+  <div class="start-menu-item" onclick="openWindow('terminal');closeStartMenu()">
+    <span>&gt;_</span> Terminal
+  </div>
+  <div class="start-menu-sep"></div>
+  <div class="start-menu-item" onclick="location.href='https://github.com/AngelDev2343'" target="_blank">
+    <span><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="20px" style="border-radius: 50%"></span> GitHub
+  </div>
+  <div class="start-menu-sep"></div>
+  <div class="start-menu-item danger" onclick="reboot()">
+    <span>↺</span> Reiniciar
+  </div>
+</div>
+
+<!-- ════════════════ CONTEXT MENU ════════════════ -->
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" onclick="openWindow('terminal')">Abrir Terminal</div>
+  <div class="ctx-item" onclick="openWindow('about')">Ver Perfil</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="arrangeWindows()">Organizar Ventanas</div>
+  <div class="ctx-item" onclick="closeAll()">Cerrar Todo</div>
+</div>
+
+<!-- ════════════════ TOOLTIP ════════════════ -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- ════════════════ NOTIFICATION ════════════════ -->
+<div class="notif" id="notif"></div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
