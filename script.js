@@ -860,7 +860,7 @@ const bootMessages = [
                     loading="lazy">
                 </iframe>
         `
-    }
+    },
 
     kid: {
         title: '777.exe - A windows virus',
