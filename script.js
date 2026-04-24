@@ -866,14 +866,7 @@ const bootMessages = [
         title: '777.exe - A windows virus',
         width: 1280, height: 720,
         content: () => ` 
-                      <video 
-                          src="./kid.mp4"
-                          style="width: 100%; height: 100%; object-fit: cover; display: block;"
-                          autoplay
-                          loop
-                          muted
-                          playsinline>
-                      </video>
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         `
     }
   
