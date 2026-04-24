@@ -495,7 +495,7 @@ const bootMessages = [
             <div class="preview-dot" style="background:#00ff41"></div>
             <div class="preview-url">cerimex.local / tienda</div>
           </div>
-                  <img src="https://github.com/AngelDev2343/land/blob/main/gifs/cerimex.gif?raw=true" style="width: 100%; height: auto min-height: 500px;">
+                  <img src="https://github.com/AngelDev2343/land/blob/main/gifs/cerimex.gif?raw=true" style="width: 100%; height: auto; min-height: 500px;">
           </div>
         <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
           Tienda e-commerce completa con catálogo, carrito, múltiples direcciones, pagos y <span class="hi">chatbot</span> integrado. Panel de admin separado.
