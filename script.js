@@ -862,8 +862,10 @@ const bootMessages = [
 
     kid: {
         title: '777.exe - A windows virus',
-        width: 900, height: 550,
+        width: 650, height: 520,
         content: () => ` 
+                <div class="section-title">My first encounter with programming</div>
+                <div class="section-title"><p>Functional virus for the Windows system made when I was 13 years old</p>/div>
                 <iframe width="100%" height="100%" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         `
     }
