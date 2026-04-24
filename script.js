@@ -852,14 +852,12 @@ const bootMessages = [
     arcade: {
         title: 'Angel Dev Arcade',
         width: 1280, height: 720,
-        content: () => ` 
-                <iframe 
-                    src="https://angelsperez.github.io/Angel-Dev-Arcade/"
-                    style="width:100%; height:100%; border:none; display:block;"
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
-                    loading="lazy">
-                </iframe>
-        `
+        content: () => `<iframe 
+            src="https://angelsperez.github.io/Angel-Dev-Arcade/"
+            style="width:100%; height:100%; border:none; display:block;"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+            loading="lazy">
+        </iframe>`
     },
 
     kid: {
