@@ -826,7 +826,7 @@ const bootMessages = [
                 </div>
     
                     <img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/images/image.png" style="width:100%;border-radius:0px;object-fit:cover;aspect-ratio:16/9;">
-                </div>
+
             </div>
     
             <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
