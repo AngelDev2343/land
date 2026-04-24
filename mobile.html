@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AngelOS Mobile v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<script>
+if (!/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent)) {
+    window.location.href = "https://angeldev2343.github.io/land/index.html";
+}
+</script>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<!-- ════════════════ BOOT SCREEN ════════════════ -->
+<div id="boot-screen" class="screen">
+  <div class="boot-header">AngelOS<br><span class="boot-sub">Mobile v1.0</span></div>
+  <div class="boot-log" id="boot-log"></div>
+  <div class="boot-progress">
+    <div class="boot-progress-bar" id="boot-bar"></div>
+  </div>
+</div>
+
+<!-- ════════════════ LOGIN SCREEN ════════════════ -->
+<div id="login-screen" class="screen hidden">
+  <canvas id="login-rain"></canvas>
+  <div class="login-box">
+    <div class="login-os-name">ANGELOS</div>
+    <div class="login-version">MOBILE v1.0 // SECURE BOOT</div>
+    <div class="login-avatar">
+      <div class="login-avatar-placeholder">A</div>
+    </div>
+    <div class="login-username">
+      Admin
+      <span>// angel.salinas@angelos:~$</span>
+    </div>
+    <button class="login-btn" id="login-btn">[ INGRESAR ]</button>
+    <div class="login-footer">
+      AngelOS — Desarrollador Full-Stack<br>
+      © 2026 Angel Salinas Pérez
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ HOME SCREEN ════════════════ -->
+<div id="home-screen" class="screen hidden">
+  <canvas id="matrix-canvas"></canvas>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-left" id="status-time">00:00</span>
+    <span class="status-center">AngelOS</span>
+    <span class="status-right">
+      <span class="signal">▂▄▆</span>
+      <span class="battery">▮▮▮▯ 75%</span>
+    </span>
+  </div>
+
+  <!-- Pages container (swipeable) -->
+  <div class="pages-wrapper" id="pages-wrapper">
+
+    <!-- Page 1 -->
+    <div class="icon-page" id="page-1">
+      <div class="icon-row">
+        <div class="app-icon" data-app="about">
+          <div class="icon-img"><img src="https://github.com/AngelDev2343/AngelDev2343/blob/main/Dise%C3%B1o%20sin%20t%C3%ADtulo.png?raw=true" alt="about" onerror="this.style.display='none';this.parentNode.innerHTML='👤'"></div>
+          <div class="icon-label">about.exe</div>
+        </div>
+        <div class="app-icon" data-app="projects">
+          <div class="icon-img icon-emoji">📁</div>
+          <div class="icon-label">projects/</div>
+        </div>
+        <div class="app-icon" data-app="skills">
+          <div class="icon-img icon-emoji">⚡</div>
+          <div class="icon-label">stack.db</div>
+        </div>
+        <div class="app-icon" data-app="contact">
+          <div class="icon-img icon-emoji">📡</div>
+          <div class="icon-label">contact.sh</div>
+        </div>
+      </div>
+      <div class="icon-row">
+        <div class="app-icon" data-app="terminal">
+          <div class="icon-img icon-emoji" style="font-size:22px;font-family:var(--font-mono)">&gt;_</div>
+          <div class="icon-label">terminal</div>
+        </div>
+        <div class="app-icon" data-app="whyai">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/WhyAI/refs/heads/main/icons/logo512.png" alt="WhyAI"></div>
+          <div class="icon-label">WhyAI</div>
+        </div>
+        <div class="app-icon" data-app="bio3d">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Bio3D/refs/heads/main/logo1.png" alt="Bio3D" style="border-radius:50%"></div>
+          <div class="icon-label">Bio3D</div>
+        </div>
+        <div class="app-icon" data-app="cerimex">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Cerimex/refs/heads/main/img/cerimex-logo.png" alt="Cerimex" style="border-radius:50%"></div>
+          <div class="icon-label">Cerimex</div>
+        </div>
+      </div>
+      <div class="icon-row">
+        <div class="app-icon" data-app="twin">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/TwinMessenger/refs/heads/main/proyect/twin/images/Twin%20Messenger.png" alt="Twin"></div>
+          <div class="icon-label">Twin...</div>
+        </div>
+        <div class="app-icon" data-app="fender">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Fender/refs/heads/main/Fender.png" alt="Fender"></div>
+          <div class="icon-label">Fender</div>
+        </div>
+        <div class="app-icon" data-app="fluttertool">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/10345744.png" alt="FlutterTool"></div>
+          <div class="icon-label">Flutter...</div>
+        </div>
+        <div class="app-icon" data-app="digitalpiano">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/DigitalPiano/refs/heads/main/images/icons/icon512.png" alt="Piano"></div>
+          <div class="icon-label">Digital...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="icon-page" id="page-2">
+      <div class="icon-row">
+        <div class="app-icon" data-app="marketplaceonly">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/MarketPlaceOnly/refs/heads/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Market"></div>
+          <div class="icon-label">Market...</div>
+        </div>
+        <div class="app-icon" data-app="mitosisvr">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/MitosisVR/refs/heads/main/VR.png" alt="MitosisVR"></div>
+          <div class="icon-label">MitosisVR</div>
+        </div>
+        <div class="app-icon" data-app="devos">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/DevOS/refs/heads/main/DevOS.png" alt="DevOS" style="border-radius:5px"></div>
+          <div class="icon-label">DevOS</div>
+        </div>
+        <div class="app-icon" data-app="emunav">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/EmuNAV/refs/heads/main/EmuNAV.png" alt="EmuNAV" style="border-radius:4px"></div>
+          <div class="icon-label">EmuNAV</div>
+        </div>
+      </div>
+      <div class="icon-row">
+        <div class="app-icon" data-app="navascript">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/NS.png" alt="NavaScript" style="border-radius:4px"></div>
+          <div class="icon-label">NavaScript</div>
+        </div>
+        <div class="app-icon" data-app="arcade">
+          <div class="icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/AngelDev2343/refs/heads/main/Arcade.png" alt="Arcade" style="border-radius:4px"></div>
+          <div class="icon-label">Arcade</div>
+        </div>
+        <div class="app-icon empty"></div>
+        <div class="app-icon empty"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Page dots -->
+  <div class="page-dots" id="page-dots">
+    <div class="dot active" data-page="0"></div>
+    <div class="dot" data-page="1"></div>
+  </div>
+
+  <!-- Dock -->
+  <div class="dock">
+    <div class="app-icon dock-icon" data-app="about">
+      <div class="icon-img"><img src="https://github.com/AngelDev2343/AngelDev2343/blob/main/Dise%C3%B1o%20sin%20t%C3%ADtulo.png?raw=true" alt="about" onerror="this.style.display='none';this.parentNode.innerHTML='👤'"></div>
+    </div>
+    <div class="app-icon dock-icon" data-app="projects">
+      <div class="icon-img icon-emoji">📁</div>
+    </div>
+    <div class="app-icon dock-icon" data-app="terminal">
+      <div class="icon-img icon-emoji" style="font-size:22px;font-family:var(--font-mono)">&gt;_</div>
+    </div>
+    <div class="app-icon dock-icon" data-app="contact">
+      <div class="icon-img icon-emoji">📡</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ APP PANEL (fullscreen overlay) ════════════════ -->
+<div id="app-panel" class="app-panel hidden">
+  <div class="panel-header">
+    <button class="panel-back" id="panel-back">‹ Inicio</button>
+    <div class="panel-title" id="panel-title">app</div>
+    <button class="panel-close" id="panel-close">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<!-- ════════════════ NOTIFICATION ════════════════ -->
+<div class="notif" id="notif"></div>
+
+<script src="mobile.js" defer></script>
+</body>
+</html>
