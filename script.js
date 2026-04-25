@@ -864,8 +864,8 @@ const bootMessages = [
         title: '777.exe - A windows virus',
         width: 650, height: 520,
         content: () => ` 
-                <div class="section-title">My first encounter with programming</div>
-                <div class="section-title">Functional virus for the Windows system made when I was 13 years old.</div>
+                <div class="section-title">777.exe - VIRUS</div>
+                <div class="section-title">Desarrollé un virus funcional para Windows a los 13 años, marcando mi primer acercamiento al mundo de la programación.</div>
                 <iframe width="100%" height="100%" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         `
     }
