@@ -35,11 +35,31 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
       Admin
       <span>// angel.salinas@angelos:~$</span>
     </div>
-    <button class="login-btn" id="login-btn">[ INGRESAR ]</button>
+    <button class="login-btn" id="login-btn" data-i18n="login.btn">[ LOGIN ]</button>
     <div class="login-footer">
-      AngelOS — Desarrollador Full-Stack<br>
+      <span data-i18n="login.footer">AngelOS — Full-Stack Developer</span><br>
       © 2026 Angel Salinas Pérez
     </div>
+  </div>
+</div>
+
+
+<!-- ════════════════ LANGUAGE SCREEN ════════════════ -->
+<div id="lang-screen" class="screen hidden">
+  <div class="lang-box">
+    <div class="lang-title">ANGELOS</div>
+    <div class="lang-subtitle">// SELECT LANGUAGE</div>
+    <div class="lang-options">
+      <label class="lang-option">
+        <input type="radio" name="lang" value="en" checked>
+        <span>English</span>
+      </label>
+      <label class="lang-option">
+        <input type="radio" name="lang" value="es">
+        <span>Español</span>
+      </label>
+    </div>
+    <button class="lang-btn" id="lang-btn" data-i18n="lang.accept">[ ACCEPT ]</button>
   </div>
 </div>
 
@@ -128,6 +148,10 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
         <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/AngelDev2343/refs/heads/main/Arcade.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
         <div class="d-icon-label">Arcade</div>
       </div>
+      <div class="d-icon" data-app="music">
+        <div class="d-icon-img"><img src="https://img.freepik.com/vector-premium/icono-nota-cancion-pictograma-simple_764382-169717.jpg" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+        <div class="d-icon-label">Music Player</div>
+      </div>
     </div>
 
   </div>
@@ -153,37 +177,37 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
     <p>angel.salinas // Admin</p>
   </div>
   <div class="start-menu-item" onclick="openWindow('about');closeStartMenu()">
-    <span>👤</span> Sobre mí
+    <span>👤</span> <span data-i18n="start.about">About me</span>
   </div>
   <div class="start-menu-item" onclick="openWindow('projects');closeStartMenu()">
-    <span>📁</span> Proyectos
+    <span>📁</span> <span data-i18n="start.projects">Projects</span>
   </div>
   <div class="start-menu-item" onclick="openWindow('skills');closeStartMenu()">
-    <span>⚡</span> Stack
+    <span>⚡</span> <span data-i18n="start.skills">Stack</span>
   </div>
   <div class="start-menu-item" onclick="openWindow('contact');closeStartMenu()">
-    <span>📡</span> Contacto
+    <span>📡</span> <span data-i18n="start.contact">Contact</span>
   </div>
   <div class="start-menu-item" onclick="openWindow('terminal');closeStartMenu()">
-    <span>&gt;_</span> Terminal
+    <span>&gt;_</span> <span data-i18n="start.terminal">Terminal</span>
   </div>
   <div class="start-menu-sep"></div>
   <div class="start-menu-item" onclick="location.href='https://github.com/AngelDev2343'" target="_blank">
-    <span><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="20px" style="border-radius: 50%"></span> GitHub
+    <span><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="20px" style="border-radius: 50%"></span> <span data-i18n="start.github">GitHub</span>
   </div>
   <div class="start-menu-sep"></div>
   <div class="start-menu-item danger" onclick="reboot()">
-    <span>↺</span> Reiniciar
+    <span>↺</span> <span data-i18n="start.restart">Restart</span>
   </div>
 </div>
 
 <!-- ════════════════ CONTEXT MENU ════════════════ -->
 <div class="ctx-menu" id="ctx-menu">
-  <div class="ctx-item" onclick="openWindow('terminal')">Abrir Terminal</div>
-  <div class="ctx-item" onclick="openWindow('about')">Ver Perfil</div>
+  <div class="ctx-item" onclick="openWindow('terminal')" data-i18n="ctx.terminal">Open Terminal</div>
+  <div class="ctx-item" onclick="openWindow('about')" data-i18n="ctx.profile">View Profile</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="arrangeWindows()">Organizar Ventanas</div>
-  <div class="ctx-item" onclick="closeAll()">Cerrar Todo</div>
+  <div class="ctx-item" onclick="arrangeWindows()" data-i18n="ctx.arrange">Arrange Windows</div>
+  <div class="ctx-item" onclick="closeAll()" data-i18n="ctx.closeall">Close All</div>
 </div>
 
 <!-- ════════════════ TOOLTIP ════════════════ -->
@@ -192,6 +216,7 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
 <!-- ════════════════ NOTIFICATION ════════════════ -->
 <div class="notif" id="notif"></div>
 
+<script src="lang.js" defer></script>
 <script src="script.js" defer></script>
 
 </body>

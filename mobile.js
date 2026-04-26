@@ -1,24 +1,32 @@
+// ── Safety fallback if lang.js failed to load ──
+if (typeof window.t !== 'function') {
+  window._osLang = 'en';
+  window.LANG = { en: {}, es: {} };
+  window.t = function(k) { return k; };
+  window.applyLanguage = function(l) { window._osLang = l; };
+}
+
 // ══════════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════════
 const bootMessages = [
   { t: 'BIOS v4.2.1 — AngelOS Mobile', cl: '' },
-  { t: 'Verificando integridad del sistema...', cl: 'ok' },
-  { t: 'Inicializando hardware móvil...', cl: 'ok' },
-  { t: 'Cargando kernel AngelOS...', cl: 'ok' },
-  { t: 'Montando sistema de archivos...', cl: 'ok' },
-  { t: 'Iniciando módulo de red...', cl: 'ok' },
-  { t: 'Cargando drivers gráficos [HACKER-GREEN-MODE]...', cl: 'ok' },
-  { t: 'Iniciando launcher móvil...', cl: 'ok' },
-  { t: 'Cargando proyectos...', cl: 'ok' },
-  { t: 'Cargando stack tecnológico...', cl: 'ok' },
-  { t: '⚠  Stack Coffee.exe no encontrado', cl: 'warn' },
-  { t: 'Iniciando AngelOS Mobile...', cl: '' },
+  { t: 'Verifying system integrity...', cl: 'ok' },
+  { t: 'Initializing mobile hardware...', cl: 'ok' },
+  { t: 'Loading AngelOS kernel...', cl: 'ok' },
+  { t: 'Mounting file system...', cl: 'ok' },
+  { t: 'Starting network module...', cl: 'ok' },
+  { t: 'Loading graphics drivers [HACKER-GREEN-MODE]...', cl: 'ok' },
+  { t: 'Starting mobile launcher...', cl: 'ok' },
+  { t: 'Loading projects...', cl: 'ok' },
+  { t: 'Loading tech stack...', cl: 'ok' },
+  { t: '⚠  Stack Coffee.exe not found', cl: 'warn' },
+  { t: 'Starting AngelOS Mobile...', cl: '' },
   { t: '', cl: '' },
-  { t: '   Bienvenido, Admin', cl: '' },
+  { t: '   Welcome, Admin', cl: '' },
   { t: '   AngelOS Mobile v1.0.0-stable', cl: '' },
   { t: '', cl: '' },
-  { t: 'Sistema listo.', cl: 'ok' },
+  { t: 'System ready.', cl: 'ok' },
 ];
 
 let bootIdx = 0;
@@ -84,19 +92,41 @@ function startLoginRain() {
 //  LOGIN
 // ══════════════════════════════════════════
 document.getElementById('login-btn').addEventListener('click', function() {
-  this.textContent = '[ AUTENTICANDO... ]';
+  this.textContent = window.t('login.auth');
   this.disabled = true;
   setTimeout(() => {
+    // Hide login
     const loginScreen = document.getElementById('login-screen');
     loginScreen.classList.add('hidden');
     setTimeout(() => loginScreen.classList.add('gone'), 600);
-    const home = document.getElementById('home-screen');
-    home.classList.remove('hidden');
-    startMatrixRain();
-    startClock();
-    startBattery();
-    setTimeout(() => showNotif('Bienvenido de vuelta, Admin'), 400);
+
+    // Show lang screen — force inline styles as failsafe
+    const langScreen = document.getElementById('lang-screen');
+    langScreen.classList.remove('hidden');
+    langScreen.style.cssText = 'display:flex!important;opacity:1!important;visibility:visible!important;position:fixed!important;inset:0!important;z-index:10000!important;align-items:center;justify-content:center;background:var(--bg1);padding:20px;';
   }, 700);
+});
+
+// ══════════════════════════════════════════
+//  LANGUAGE SELECTION
+// ══════════════════════════════════════════
+document.getElementById('lang-btn').addEventListener('click', function() {
+  const selectedLang = document.querySelector('input[name="lang"]:checked').value;
+  window.applyLanguage(selectedLang);
+
+  // Hide lang screen
+  const langScreen = document.getElementById('lang-screen');
+  langScreen.classList.add('hidden');
+  langScreen.style.cssText = '';
+  setTimeout(() => langScreen.classList.add('gone'), 600);
+
+  // Show home
+  const home = document.getElementById('home-screen');
+  home.classList.remove('hidden');
+  startMatrixRain();
+  startClock();
+  startBattery();
+  setTimeout(() => showNotif(window.t('notif.welcome')), 400);
 });
 
 // ══════════════════════════════════════════
@@ -222,7 +252,8 @@ function openApp(id) {
   const def = appDefs[id];
   if (!def) return;
 
-  panelTitle.textContent = def.title;
+  panel.dataset.currentApp = id;
+  panelTitle.textContent = typeof def.title === 'function' ? def.title() : def.title;
   panelBody.innerHTML = def.content();
   panel.classList.remove('hidden');
   requestAnimationFrame(() => panel.classList.add('open'));
@@ -252,39 +283,37 @@ document.addEventListener('click', function(e) {
 // ══════════════════════════════════════════
 //  APP DEFINITIONS
 // ══════════════════════════════════════════
-const appDefs = {
+const appDefs = window.appDefs = {
 
   about: {
-    title: 'about.exe',
+    title: () => window.t('app.about.title'),
     content: () => `
       <div class="section-title">// WHOAMI</div>
       <div class="about-grid">
-        <div class="about-field"><label>Nombre</label><span>Angel Salinas Pérez</span></div>
-        <div class="about-field"><label>Rol</label><span>Dev Full-Stack</span></div>
-        <div class="about-field"><label>Ubicación</label><span>México</span></div>
-        <div class="about-field"><label>Email</label><span>23angelsperez@gmail.com</span></div>
+        <div class="about-field"><label>${window.t('about.label.name')}</label><span>Angel Salinas Pérez</span></div>
+        <div class="about-field"><label>${window.t('about.label.role')}</label><span>${window.t('about.value.role')}</span></div>
+        <div class="about-field"><label>${window.t('about.label.location')}</label><span>${window.t('about.value.location')}</span></div>
+        <div class="about-field"><label>${window.t('about.label.email')}</label><span>23angelsperez@gmail.com</span></div>
         <div class="about-field"><label>GitHub</label><span>AngelDev2343</span></div>
         <div class="about-field"><label>Instagram</label><span>@angl.perz</span></div>
-        <div class="about-field"><label>Status</label><span style="color:#00ff41">● Disponible</span></div>
-        <div class="about-field"><label>Versión</label><span>v2026.04</span></div>
+        <div class="about-field"><label>${window.t('about.label.status')}</label><span style="color:#00ff41">${window.t('about.value.status')}</span></div>
+        <div class="about-field"><label>${window.t('about.label.version')}</label><span>v2026.04</span></div>
       </div>
       <div style="margin-top:14px;padding:14px;background:var(--bg3);border-left:2px solid var(--green);font-size:11px;color:var(--text-dim);line-height:1.8">
         <span class="prompt">angel@angelos:~$ </span><span class="cmd">cat about.txt</span><br><br>
-        <span class="out">Hola, soy Ángel. Convierto ideas en páginas web que funcionan y hacen crecer negocios.<br><br>
-        ¿Quieres vender por internet? ¿Tienes una idea pero no sabes por dónde empezar?<br><br>
-        Yo me encargo de hacerlo realidad.</span>
+        <span class="out">${window.t('about.bio')}</span>
       </div>
     `
   },
 
   projects: {
-    title: 'projects/',
+    title: () => window.t('app.projects.title'),
     content: () => `
       <div class="section-title">// LS -LA ~/projects</div>
       <div class="project-list">
         <div class="project-card">
           <h3>WhyAI</h3>
-          <p>IA directo desde el navegador. Modo online e offline. Sin registro, sin datos guardados.</p>
+          <p>${window.t('proj.whyai.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">JavaScript</span><span class="tag">WebAI</span><span class="tag">Privacy</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
@@ -293,7 +322,7 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>Bio3D</h3>
-          <p>Visor 3D controlado por gestos desde el navegador. Sin plugins.</p>
+          <p>${window.t('proj.bio3d.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">WebGL</span><span class="tag">Three.js</span><span class="tag">ML</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/Bio3D" target="_blank">[ GitHub ]</a>
@@ -302,7 +331,7 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>Cerimex</h3>
-          <p>E-commerce de cerámica con carrito, pagos y chatbot integrado.</p>
+          <p>${window.t('proj.cerimex.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">PHP</span><span class="tag">MySQL</span><span class="tag">E-commerce</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/Cerimex" target="_blank">[ GitHub ]</a>
@@ -310,7 +339,7 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>Twin Messenger</h3>
-          <p>Recreación del MSN Messenger. Mensajería real-time, Buzz, notificaciones sonoras.</p>
+          <p>${window.t('proj.twin.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Node.js</span><span class="tag">WebSockets</span><span class="tag">Retro</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/TwinMessenger" target="_blank">[ GitHub ]</a>
@@ -319,7 +348,7 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>Fender</h3>
-          <p>Clon de la tienda Fender con cambio de color en tiempo real y carrito persistente.</p>
+          <p>${window.t('proj.fender.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Python</span><span class="tag">Django</span><span class="tag">UI/UX</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/Fender" target="_blank">[ GitHub ]</a>
@@ -328,16 +357,16 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>FlutterTool</h3>
-          <p>Script .bat que instala Flutter + Java + Android SDK sin permisos de admin.</p>
+          <p>${window.t('proj.flutter.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Windows</span><span class="tag">Batch</span><span class="tag">Automation</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/releases/download/v1.0/FlutterTool.bat" target="_blank">[ Descargar ]</a>
+            <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/releases/download/v1.0/FlutterTool.bat" target="_blank">${window.t('proj.btn.download')}</a>
           </div>
         </div>
         <div class="project-card">
           <h3>Digital Piano</h3>
-          <p>Piano digital interactivo con 2 octavas y audio en tiempo real.</p>
+          <p>${window.t('proj.piano.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">JavaScript</span><span class="tag">Audio</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/DigitalPiano" target="_blank">[ GitHub ]</a>
@@ -346,47 +375,47 @@ const appDefs = {
         </div>
         <div class="project-card">
           <h3>MarketplaceOnly</h3>
-          <p>App Android para Facebook Marketplace sin feed ni distracciones.</p>
+          <p>${window.t('proj.market.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Android</span><span class="tag">Kotlin</span><span class="tag">Privacy</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly/releases/download/1.1_Signed/MarketPlaceOnly-Signed.apk" target="_blank">[ APK ]</a>
+            <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly/releases/download/1.1_Signed/MarketPlaceOnly-Signed.apk" target="_blank">${window.t('proj.btn.apk')}</a>
           </div>
         </div>
         <div class="project-card">
           <h3>MitosisVR</h3>
-          <p>Experiencia VR educativa en Godot 4 sobre fases de la mitosis celular.</p>
+          <p>${window.t('proj.mitosis.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Godot 4</span><span class="tag">VR</span><span class="tag">Educativo</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/MitosisVR" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://mitosis1.netlify.app/main.html" target="_blank">[ Probar ]</a>
+            <a class="project-link" href="https://mitosis1.netlify.app/main.html" target="_blank">${window.t('proj.btn.try')}</a>
           </div>
         </div>
         <div class="project-card">
           <h3>DevOS</h3>
-          <p>Linux Live basado en Fedora, desarrollado 80% con IA.</p>
+          <p>${window.t('proj.devos.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Linux</span><span class="tag">Fedora</span><span class="tag">AI</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/DevOS" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">[ ISO ]</a>
+            <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">${window.t('proj.btn.iso')}</a>
           </div>
         </div>
         <div class="project-card">
           <h3>EmuNAV</h3>
-          <p>Interfaz para jugar Nintendo DS en el navegador. Sin instalación.</p>
+          <p>${window.t('proj.emunav.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">WebAssembly</span><span class="tag">Emulator</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/EmuNAV/" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://angeldev2343.github.io/EmuNAV/" target="_blank">[ Probar ]</a>
+            <a class="project-link" href="https://angeldev2343.github.io/EmuNAV/" target="_blank">${window.t('proj.btn.try')}</a>
           </div>
         </div>
         <div class="project-card">
           <h3>NavaScript</h3>
-          <p>Lenguaje de programación con sintaxis propia, IDE web y extensión VS Code.</p>
+          <p>${window.t('proj.nava.desc')}</p>
           <div style="margin-bottom:8px"><span class="tag">Language</span><span class="tag">IDE</span><span class="tag">Experimental</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/NavaScript" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://AngelDev2343.github.io/NavaScript" target="_blank">[ IDE Web ]</a>
+            <a class="project-link" href="https://AngelDev2343.github.io/NavaScript" target="_blank">${window.t('proj.btn.ide')}</a>
           </div>
         </div>
       </div>
@@ -394,13 +423,13 @@ const appDefs = {
   },
 
   skills: {
-    title: 'stack.db',
+    title: () => window.t('app.skills.title'),
     content: () => `
       <div class="section-title">// STACK --list-all</div>
       <div style="margin-bottom:12px;font-size:11px;color:var(--text-dim)">
         <span class="prompt">angel@angelos:~$ </span><span class="cmd">query stack WHERE level > 0</span>
       </div>
-      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">// FRONTEND</div>
+      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.frontend')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
         <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png"></span>HTML5</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://quintonparks.com/images/css.png"></span>CSS3</div>
@@ -408,7 +437,7 @@ const appDefs = {
         <div class="skill-badge"><span class="sk-icon"><img src="https://web-creator.ru/technologies/kotlin.png"></span>Kotlin</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://seekicon.com/free-icon-download/flutter_2.png"></span>Flutter</div>
       </div>
-      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">// BACKEND</div>
+      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.backend')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
         <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354238/python.svg"></span>Python</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/NS.png"></span>NavaScript</div>
@@ -419,13 +448,13 @@ const appDefs = {
         <div class="skill-badge"><span class="sk-icon"><img src="https://cdn.creazilla.com/icons/3253516/bash-icon-icon-md.png"></span>Bash</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://images.icon-icons.com/1495/PNG/512/godot_103035.png"></span>GDScript</div>
       </div>
-      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">// BASES DE DATOS</div>
+      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.databases')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
         <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354099/mysql.svg"></span>MySQL</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/mongodb.png"></span>MongoDB</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://miro.medium.com/v2/resize:fit:1400/1*5Hnnv0awfSv0BGcq1C522w.png"></span>phpMyAdmin</div>
       </div>
-      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">// HERRAMIENTAS</div>
+      <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.tools')}</div>
       <div class="skills-grid">
         <div class="skill-badge"><span class="sk-icon"><img src="https://icons.veryicon.com/png/o/business/vscode-program-item-icon/vscode.png"></span>VS Code</div>
         <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" style="border-radius:50%"></span>Git/GitHub</div>
@@ -436,19 +465,19 @@ const appDefs = {
   },
 
   contact: {
-    title: 'contact.sh',
+    title: () => window.t('app.contact.title'),
     content: () => `
       <div class="section-title">// CONTACT --help</div>
       <div style="font-size:11px;color:var(--text-dim);margin-bottom:16px">
         <span class="prompt">angel@angelos:~$ </span><span class="cmd">./contact.sh --list</span>
       </div>
-      <div class="contact-item" onclick="navigator.clipboard&&navigator.clipboard.writeText('23angelsperez@gmail.com').then(()=>showNotif('Email copiado'))">
+      <div class="contact-item" onclick="navigator.clipboard&&navigator.clipboard.writeText('23angelsperez@gmail.com').then(()=>showNotif(window.t('notif.email')))">
         <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/email.png" width="22" style="border-radius:50%"></div>
         <div class="contact-info">
           <label>Email</label>
           <span>23angelsperez@gmail.com</span>
         </div>
-        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">[copiar]</span>
+        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">${window.t('contact.copy')}</span>
       </div>
       <div class="contact-item" onclick="window.open('https://github.com/AngelDev2343','_blank')">
         <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="22" style="border-radius:50%"></div>
@@ -456,7 +485,7 @@ const appDefs = {
           <label>GitHub</label>
           <span>AngelDev2343</span>
         </div>
-        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">[abrir →]</span>
+        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">${window.t('contact.open')}</span>
       </div>
       <div class="contact-item" onclick="window.open('https://www.instagram.com/angl.perz/','_blank')">
         <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/social.png" width="22" style="border-radius:50%"></div>
@@ -464,30 +493,28 @@ const appDefs = {
           <label>Instagram</label>
           <span>@angl.perz</span>
         </div>
-        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">[abrir →]</span>
+        <span style="font-size:10px;color:var(--text-muted);margin-left:auto">${window.t('contact.open')}</span>
       </div>
       <div style="margin-top:20px;padding:14px;background:var(--bg3);border:1px solid var(--border);font-size:11px;color:var(--text-dim);line-height:1.8">
-        <span class="hi">¿Tienes un proyecto en mente?</span><br>
-        Cuéntame tu idea y te ayudo a hacerla realidad.<br>
-        Disponible para proyectos freelance y colaboraciones.
+        <span class="hi">${window.t('contact.cta.title')}</span><br>${window.t('contact.cta.body')}
       </div>
     `
   },
 
   terminal: {
-    title: 'terminal',
+    title: () => window.t('app.terminal.title'),
     content: () => `
       <div id="term-out" class="terminal-output">
         <span class="prompt">angel@angelos:~$ </span><span class="cmd">help</span><br>
-        <span class="out">Comandos disponibles:</span><br>
-        <span class="out">  <span class="hi">whoami</span>    — Info del dev</span><br>
-        <span class="out">  <span class="hi">projects</span>  — Listar proyectos</span><br>
-        <span class="out">  <span class="hi">skills</span>    — Ver stack</span><br>
-        <span class="out">  <span class="hi">contact</span>   — Contacto</span><br>
-        <span class="out">  <span class="hi">github</span>    — Abrir GitHub</span><br>
-        <span class="out">  <span class="hi">clear</span>     — Limpiar</span><br>
-        <span class="out">  <span class="hi">rain</span>      — Matrix rain</span><br>
-        <span class="out">  <span class="hi">matrix</span>    — ???</span><br><br>
+        <span class="out">${window.t('term.help.header')}</span><br>
+        <span class="out">  <span class="hi">whoami</span>    ${window.t('term.cmd.whoami')}</span><br>
+        <span class="out">  <span class="hi">projects</span>  ${window.t('term.cmd.projects')}</span><br>
+        <span class="out">  <span class="hi">skills</span>    ${window.t('term.cmd.skills')}</span><br>
+        <span class="out">  <span class="hi">contact</span>   ${window.t('term.cmd.contact')}</span><br>
+        <span class="out">  <span class="hi">github</span>    ${window.t('term.cmd.github')}</span><br>
+        <span class="out">  <span class="hi">clear</span>     ${window.t('term.cmd.clear')}</span><br>
+        <span class="out">  <span class="hi">rain</span>      ${window.t('term.cmd.rain')}</span><br>
+        <span class="out">  <span class="hi">matrix</span>    ${window.t('term.cmd.matrix')}</span><br><br>
       </div>
       <div class="terminal-input-line">
         <span class="prompt">angel@angelos:~$ </span>
@@ -517,7 +544,7 @@ const appDefs = {
           autoplay loop muted playsinline></video>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        IA directa desde el navegador. Modo <span class="hi">online</span> (cloud) o <span class="hi">offline</span> (local). Sin registro ni instalación.
+        ${window.t('proj.whyai.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
@@ -543,7 +570,7 @@ const appDefs = {
           autoplay loop muted playsinline></video>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Controla modelos 3D con gestos de mano desde la webcam. <span class="hi">Mano abierta</span> = rotar/zoom. <span class="hi">Puño</span> = arrastrar.
+        ${window.t('proj.bio3d.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/Bio3D" target="_blank">[ GitHub ]</a>
@@ -567,7 +594,7 @@ const appDefs = {
         <img src="https://github.com/AngelDev2343/land/blob/main/gifs/cerimex.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        E-commerce de cerámica con catálogo, carrito, pagos y <span class="hi">chatbot</span> integrado. Panel de admin separado.
+        ${window.t('proj.cerimex.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/Cerimex" target="_blank">[ GitHub ]</a>
@@ -590,7 +617,7 @@ const appDefs = {
         <img src="https://github.com/AngelDev2343/land/blob/main/gifs/twin.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Recreación del <span class="hi">MSN Messenger</span> clásico. Real-time con WebSockets, Buzz y múltiples chats.
+        ${window.t('proj.twin.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/TwinMessenger" target="_blank">[ GitHub ]</a>
@@ -614,7 +641,7 @@ const appDefs = {
         <img src="https://github.com/AngelDev2343/land/blob/main/gifs/fender.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Clon de la tienda Fender con cambio de <span class="hi">color en tiempo real</span>, Custom Shop y carrito persistente.
+        ${window.t('proj.fender.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/Fender" target="_blank">[ GitHub ]</a>
@@ -638,11 +665,11 @@ const appDefs = {
         <img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/power.PNG" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Script <span class="hi">.bat</span> que instala <span class="hi">Flutter + Java + Android SDK</span> en Windows sin permisos de admin.
+        ${window.t('proj.flutter.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/releases/download/v1.0/FlutterTool.bat" target="_blank">[ Descargar ]</a>
+        <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/releases/download/v1.0/FlutterTool.bat" target="_blank">${window.t('proj.btn.download')}</a>
       </div>
       <div><span class="tag">Windows</span><span class="tag">Batch</span><span class="tag">Automation</span></div>
     `
@@ -653,12 +680,12 @@ const appDefs = {
     content: () => `
       <div class="section-title">// Digital Piano — README.md</div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Piano digital interactivo con <span class="hi">2 octavas funcionales</span> y reproducción de audio en tiempo real con <span class="hi">JavaScript Vanilla</span>.<br><br>
-        <span style="color:var(--text-muted);font-size:10px">⚠ La versión interactiva completa está disponible en la versión desktop.</span>
+        ${window.t('proj.piano.detail')}
+        <span style="color:var(--text-muted);font-size:10px">${window.t('piano.notice')}</span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/DigitalPiano" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://AngelDev2343.github.io/DigitalPiano/index.html" target="_blank">[ Abrir Demo ]</a>
+        <a class="project-link" href="https://AngelDev2343.github.io/DigitalPiano/index.html" target="_blank">${window.t('piano.open')}</a>
       </div>
       <div><span class="tag">JavaScript</span><span class="tag">HTML</span><span class="tag">Audio</span></div>
     `
@@ -681,11 +708,11 @@ const appDefs = {
         </div>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        App Android para <span class="hi">Facebook Marketplace</span> sin distracciones. Sin feed, sin reels — solo comprar.
+        ${window.t('proj.market.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly/releases/download/1.1_Signed/MarketPlaceOnly-Signed.apk" target="_blank">[ APK ]</a>
+        <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly/releases/download/1.1_Signed/MarketPlaceOnly-Signed.apk" target="_blank">${window.t('proj.btn.apk')}</a>
       </div>
       <div><span class="tag">Android</span><span class="tag">Kotlin</span><span class="tag">Privacy</span></div>
     `
@@ -707,11 +734,11 @@ const appDefs = {
           autoplay loop muted playsinline></video>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Experiencia <span class="hi">VR educativa</span> en Godot 4 sobre la mitosis celular. Soporta Google Cardboard.
+        ${window.t('proj.mitosis.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/MitosisVR" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://mitosis1.netlify.app/main.html" target="_blank">[ Probar ]</a>
+        <a class="project-link" href="https://mitosis1.netlify.app/main.html" target="_blank">${window.t('proj.btn.try')}</a>
       </div>
       <div><span class="tag">Godot 4</span><span class="tag">VR</span><span class="tag">Educativo</span></div>
     `
@@ -734,11 +761,11 @@ const appDefs = {
         </div>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Linux Live basado en <span class="hi">Fedora</span>, desarrollado experimentalmente con <span class="hi">IA (80%)</span>.
+        ${window.t('proj.devos.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/DevOS" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">[ ISO ]</a>
+        <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">${window.t('proj.btn.iso')}</a>
       </div>
       <div><span class="tag">Linux</span><span class="tag">Fedora</span><span class="tag">AI</span></div>
     `
@@ -758,11 +785,11 @@ const appDefs = {
         <img src="https://raw.githubusercontent.com/AngelDev2343/EmuNAV/refs/heads/main/Emu.PNG" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Interfaz web para jugar <span class="hi">Nintendo DS</span> en el navegador. Basada en Desmond DS. Sin instalación.
+        ${window.t('proj.emunav.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/EmuNAV/" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://angeldev2343.github.io/EmuNAV/" target="_blank">[ Probar ]</a>
+        <a class="project-link" href="https://angeldev2343.github.io/EmuNAV/" target="_blank">${window.t('proj.btn.try')}</a>
       </div>
       <div><span class="tag">WebAssembly</span><span class="tag">Emulator</span></div>
     `
@@ -782,11 +809,11 @@ const appDefs = {
         <img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/images/image.png" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
-        Lenguaje de programación con <span class="hi">sintaxis propia</span>, IDE web y extensión para VS Code.
+        ${window.t('proj.nava.detail')}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/NavaScript" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://AngelDev2343.github.io/NavaScript" target="_blank">[ IDE Web ]</a>
+        <a class="project-link" href="https://AngelDev2343.github.io/NavaScript" target="_blank">${window.t('proj.btn.ide')}</a>
       </div>
       <div><span class="tag">Language</span><span class="tag">IDE</span><span class="tag">Experimental</span></div>
     `
@@ -824,20 +851,20 @@ function handleTerminalInput(e) {
   res.style.marginBottom = '6px';
 
   const responses = {
-    whoami:   `<span class="out">Angel Salinas Pérez — Dev Full-Stack<br>México — 2026</span>`,
-    projects: `<span class="out">12 proyectos:<br>WhyAI, Bio3D, Cerimex, Twin,<br>Fender, FlutterTool, Piano,<br>MarketOnly, MitosisVR, DevOS,<br>EmuNAV, NavaScript</span>`,
-    skills:   `<span class="out">HTML5, CSS3, JS, Python, Node.js,<br>PHP, Django, MySQL, MongoDB,<br>Kotlin, Flutter, Bash, GDScript</span>`,
-    contact:  `<span class="out">Email:  23angelsperez@gmail.com<br>GitHub: AngelDev2343<br>IG:     @angl.perz</span>`,
-    github:   `<span class="out">Abriendo GitHub...</span>`,
-    clear:    `__CLEAR__`,
-    matrix:   `<span class="warn-t">MATRIX MODE ALREADY ACTIVE.</span>`,
-    sudo:     `<span class="warn-t">Sin permisos de sudo aquí.</span>`,
-    ls:       `<span class="out">about  projects  skills  contact  terminal</span>`,
-    pwd:      `<span class="out">/home/angel/portfolio</span>`,
-    date:     `<span class="out">${new Date().toLocaleString('es-MX')}</span>`,
-    help:     `<span class="out">whoami, projects, skills, contact, github, ls, pwd, date, clear, matrix, rain</span>`,
-    rain:     `__RAIN__`,
-    '':       `<span class="out"></span>`
+    whoami:   () => `<span class="out">${window.t('term.res.whoami')}</span>`,
+    projects: () => `<span class="out">${window.t('term.res.projects')}</span>`,
+    skills:   () => `<span class="out">${window.t('term.res.skills')}</span>`,
+    contact:  () => `<span class="out">${window.t('term.res.contact')}</span>`,
+    github:   () => `<span class="out">${window.t('term.res.github')}</span>`,
+    clear:    () => '__CLEAR__',
+    matrix:   () => `<span class="warn-t">${window.t('term.res.matrix')}</span>`,
+    sudo:     () => `<span class="warn-t">${window.t('term.res.sudo')}</span>`,
+    ls:       () => `<span class="out">${window.t('term.res.ls')}</span>`,
+    pwd:      () => `<span class="out">/home/angel/portfolio</span>`,
+    date:     () => `<span class="out">${new Date().toLocaleString(window._osLang === 'es' ? 'es-MX' : 'en-US')}</span>`,
+    help:     () => `<span class="out">${window.t('term.help.list')}</span>`,
+    rain:     () => '__RAIN__',
+    '':       () => `<span class="out"></span>`
   };
 
   if (cmd === 'clear') {
@@ -852,23 +879,24 @@ function handleTerminalInput(e) {
       <canvas id="${rainId}"></canvas>
       <button onclick="
         const c=document.getElementById('${rainId}');
-        if(c._rainStop){c._rainStop();this.textContent='[ INICIAR ]';}
-        else{startTermRain('${rainId}');this.textContent='[ DETENER ]';}
-      ">[ DETENER ]</button>
-      <span style="font-size:9px;color:var(--text-muted);margin-left:8px">rain.exe activo</span>
+        if(c._rainStop){c._rainStop();this.textContent=window.t('term.rain.start');}
+        else{startTermRain('${rainId}');this.textContent=window.t('term.rain.stop');}
+      ">${window.t('term.rain.stop')}</button>
+      <span style="font-size:9px;color:var(--text-muted);margin-left:8px">${window.t('term.rain.active')}</span>
     `;
     res.appendChild(wrap);
     out.appendChild(res);
     setTimeout(() => startTermRain(rainId), 50);
   } else if (cmd === 'github') {
     window.open('https://github.com/AngelDev2343', '_blank');
-    res.innerHTML = responses.github;
+    res.innerHTML = responses.github();
     out.appendChild(res);
   } else if (responses[cmd] !== undefined) {
-    res.innerHTML = responses[cmd];
-    out.appendChild(res);
+    const val = responses[cmd]();
+    if (val === '__CLEAR__') { out.innerHTML = ''; }
+    else if (val !== '__RAIN__') { res.innerHTML = val; out.appendChild(res); }
   } else {
-    res.innerHTML = `<span style="color:#ff4444">bash: ${cmd}: comando no encontrado. Escribe 'help'.</span>`;
+    res.innerHTML = `<span style="color:#ff4444">${window.t('term.err').replace('{cmd}', cmd)}</span>`;
     out.appendChild(res);
   }
 

@@ -36,11 +36,30 @@ if (!/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.us
       Admin
       <span>// angel.salinas@angelos:~$</span>
     </div>
-    <button class="login-btn" id="login-btn">[ INGRESAR ]</button>
+    <button class="login-btn" id="login-btn" data-i18n="login.btn">[ LOGIN ]</button>
     <div class="login-footer">
-      AngelOS — Desarrollador Full-Stack<br>
+      <span data-i18n="login.footer">AngelOS — Full-Stack Developer</span><br>
       © 2026 Angel Salinas Pérez
     </div>
+  </div>
+</div>
+
+<!-- ════════════════ LANGUAGE SCREEN ════════════════ -->
+<div id="lang-screen" class="screen hidden">
+  <div class="lang-box">
+    <div class="lang-title">ANGELOS</div>
+    <div class="lang-subtitle">// SELECT LANGUAGE</div>
+    <div class="lang-options">
+      <label class="lang-option">
+        <input type="radio" name="lang" value="en" checked>
+        <span>English</span>
+      </label>
+      <label class="lang-option">
+        <input type="radio" name="lang" value="es">
+        <span>Español</span>
+      </label>
+    </div>
+    <button class="lang-btn" id="lang-btn" data-i18n="lang.accept">[ ACCEPT ]</button>
   </div>
 </div>
 
@@ -191,6 +210,7 @@ if (!/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.us
 <!-- ════════════════ NOTIFICATION ════════════════ -->
 <div class="notif" id="notif"></div>
 
+<script src="mobile-lang.js" defer></script>
 <script src="mobile.js" defer></script>
 </body>
 </html>
