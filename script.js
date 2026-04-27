@@ -882,7 +882,7 @@ const bootMessages = [
 
     music: {
         title: () => 'AngelOS Music Player',
-        width: 650, height: 520,
+        width: 650, height: 480,
         content: () => ` 
                 <div class="section-title">AngelOS Music Player</div>
                 <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6wnYRpQE9GMFk2WF8kc5AT?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
