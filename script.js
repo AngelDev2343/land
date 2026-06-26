@@ -441,7 +441,7 @@ const bootMessages = [
             <div class="preview-dot" style="background:#ff5555"></div>
             <div class="preview-dot" style="background:#ffaa00"></div>
             <div class="preview-dot" style="background:#00ff41"></div>
-            <div class="preview-url">angelsperez.github.io/ia-offline/</div>
+            <div class="preview-url">why-ia.vercel.app</div>
           </div>
                 <video 
                   src="https://github.com/user-attachments/assets/ca696e85-2d6d-4b2c-b012-57347b33bf7f"
@@ -457,7 +457,7 @@ const bootMessages = [
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
           <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
-          <a class="project-link" href="https://angelsperez.github.io/ia-offline/" target="_blank">[ Demo ]</a>
+          <a class="project-link" href="https://why-ia.vercel.app/" target="_blank">[ Demo ]</a>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <span class="tag">JavaScript</span><span class="tag">WebAI</span><span class="tag">Privacy-First</span><span class="tag">No-Install</span>
