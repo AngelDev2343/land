@@ -1,0 +1,25 @@
+{
+  "name": "AngelOS — Angel Salinas Pérez",
+  "short_name": "AngelOS",
+  "description": "Portfolio interactivo estilo sistema operativo. Full-Stack Developer — México.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020a02",
+  "theme_color": "#020a02",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "imagenes/profile.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

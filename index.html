@@ -1,16 +1,46 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AngelOS — Portfolio interactivo de Angel Salinas Pérez. Full-Stack Developer desde México. Proyectos, stack y contacto en una experiencia tipo sistema operativo.">
+<meta name="theme-color" content="#020a02">
+<meta property="og:title" content="AngelOS v1.0 — Angel Salinas Pérez">
+<meta property="og:description" content="Portfolio interactivo estilo sistema operativo. Full-Stack Developer — México.">
+<meta property="og:image" content="https://angeldev2343.github.io/land/imagenes/profile.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://angeldev2343.github.io/land/">
+<link rel="canonical" href="https://angeldev2343.github.io/land/">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="imagenes/profile.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>AngelOS v1.0 — Angel Salinas Pérez</title>
 <script>
-if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent)) {
-    window.location.href = "https://angeldev2343.github.io/land/mobile.html";
-}
+(function () {
+  var isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent)
+    || window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile && !/mobile\.html$/i.test(location.pathname)) {
+    location.replace('mobile.html');
+  }
+})();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Angel Salinas Pérez",
+  "url": "https://angeldev2343.github.io/land/",
+  "image": "https://angeldev2343.github.io/land/imagenes/profile.png",
+  "jobTitle": "Full-Stack Developer",
+  "email": "23angelsperez@gmail.com",
+  "address": { "@type": "PostalAddress", "addressCountry": "MX" },
+  "sameAs": ["https://github.com/AngelDev2343"]
+}
+</script>
 </head>
 <body>
 
@@ -29,13 +59,13 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
     <div class="login-os-name">ANGELOS</div>
     <div class="login-version">VERSION 1.0.0-STABLE // SECURE BOOT</div>
     <div class="login-avatar">
-      <div class="login-avatar-placeholder">A</div>
+      <img src="imagenes/profile.png" alt="Angel Salinas Pérez" class="login-avatar-img">
     </div>
     <div class="login-username">
       Admin
       <span>// angel.salinas@angelos:~$</span>
     </div>
-    <button class="login-btn" id="login-btn" data-i18n="login.btn">[ LOGIN ]</button>
+    <button class="login-btn" id="login-btn" data-i18n="login.btn" aria-label="Login">[ LOGIN ]</button>
     <div class="login-footer">
       <span data-i18n="login.footer">AngelOS — Full-Stack Developer</span><br>
       © 2026 Angel Salinas Pérez
@@ -48,7 +78,7 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
 <div id="lang-screen" class="screen hidden">
   <div class="lang-box">
     <div class="lang-title">ANGELOS</div>
-    <div class="lang-subtitle">// SELECT LANGUAGE</div>
+    <div class="lang-subtitle" data-i18n="lang.subtitle">// SELECT LANGUAGE</div>
     <div class="lang-options">
       <label class="lang-option">
         <input type="radio" name="lang" value="en" checked>
@@ -59,7 +89,7 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
         <span>Español</span>
       </label>
     </div>
-    <button class="lang-btn" id="lang-btn" data-i18n="lang.accept">[ ACCEPT ]</button>
+    <button class="lang-btn" id="lang-btn" data-i18n="lang.accept" aria-label="Accept language">[ ACCEPT ]</button>
   </div>
 </div>
 
@@ -72,84 +102,84 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
 
     <!-- Desktop icons (all left, wraps to second column if needed) -->
     <div class="desktop-icons" id="left-icons">
-      <div class="d-icon" data-app="about">
-        <div class="d-icon-img"><img src="https://github.com/AngelDev2343/AngelDev2343/blob/main/Dise%C3%B1o%20sin%20t%C3%ADtulo.png?raw=true" alt="Foto" width="40px" style="border-radius: 5%;"></div>
+      <div class="d-icon" data-app="about" data-tooltip="about.exe — Angel Salinas Pérez">
+        <div class="d-icon-img"><img src="imagenes/profile.png" alt="Foto" width="40px" style="border-radius: 5%;"></div>
         <div class="d-icon-label">about.exe</div>
       </div>
-      <div class="d-icon" data-app="projects">
+      <div class="d-icon" data-app="projects" data-tooltip="projects/ — Project Directory">
         <div class="d-icon-img">📁</div>
         <div class="d-icon-label">projects/</div>
       </div>
-      <div class="d-icon" data-app="skills">
+      <div class="d-icon" data-app="skills" data-tooltip="stack.db — Tech Stack">
         <div class="d-icon-img">⚡</div>
         <div class="d-icon-label">stack.db</div>
       </div>
-      <div class="d-icon" data-app="contact">
+      <div class="d-icon" data-app="contact" data-tooltip="contact.sh — Contact Channels">
         <div class="d-icon-img">📡</div>
         <div class="d-icon-label">contact.sh</div>
       </div>
-      <div class="d-icon" data-app="terminal">
+      <div class="d-icon" data-app="terminal" data-tooltip="terminal — angel@angelos:~$">
         <div class="d-icon-img">&gt;_</div>
         <div class="d-icon-label">terminal</div>
       </div>
-      <div class="d-icon" data-app="whyai">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/WhyAI/refs/heads/main/icons/logo512.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="whyai" data-tooltip="WhyAI — AI in the Browser">
+        <div class="d-icon-img"><img src="imagenes/apps/whyai.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">WhyAI</div>
       </div>
-      <div class="d-icon" data-app="bio3d">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Bio3D/refs/heads/main/logo1.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
+      <div class="d-icon" data-app="bio3d" data-tooltip="Bio3D — Gesture 3D Viewer">
+        <div class="d-icon-img"><img src="imagenes/apps/bio3d.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
         <div class="d-icon-label">Bio3D</div>
       </div>
-      <div class="d-icon" data-app="cerimex">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Cerimex/refs/heads/main/img/cerimex-logo.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
+      <div class="d-icon" data-app="cerimex" data-tooltip="Cerimex — Online Store">
+        <div class="d-icon-img"><img src="imagenes/apps/cerimex.png" alt="Logo" width="40px" style="border-radius: 50%;"></div>
         <div class="d-icon-label">Cerimex</div>
       </div>
-      <div class="d-icon" data-app="twin">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/TwinMessenger/refs/heads/main/proyect/twin/images/Twin%20Messenger.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="twin" data-tooltip="Twin Messenger — MSN Reborn">
+        <div class="d-icon-img"><img src="imagenes/apps/twin.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">Twin...</div>
       </div>
-      <div class="d-icon" data-app="fender">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/Fender/refs/heads/main/Fender.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="fender" data-tooltip="Fender — Guitar Store Clone">
+        <div class="d-icon-img"><img src="imagenes/apps/fender.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">Fender</div>
       </div>
-      <div class="d-icon" data-app="fluttertool">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/10345744.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="fluttertool" data-tooltip="FlutterTool — Windows Installer">
+        <div class="d-icon-img"><img src="imagenes/apps/fluttertool.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">Flutter...</div>
       </div>
-      <div class="d-icon" data-app="digitalpiano">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/DigitalPiano/refs/heads/main/images/icons/icon512.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="digitalpiano" data-tooltip="Digital Piano — Web Instrument">
+        <div class="d-icon-img"><img src="imagenes/apps/digitalpiano.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">Digital...</div>
       </div>
-      <div class="d-icon" data-app="marketplaceonly">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/MarketPlaceOnly/refs/heads/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="marketplaceonly" data-tooltip="MarketPlaceOnly — Android App">
+        <div class="d-icon-img"><img src="imagenes/apps/marketplace.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">Market...</div>
       </div>
-      <div class="d-icon" data-app="mitosisvr">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/MitosisVR/refs/heads/main/VR.png" alt="Logo" width="40px"></div>
+      <div class="d-icon" data-app="mitosisvr" data-tooltip="Mitosis VR — Immersive Biology">
+        <div class="d-icon-img"><img src="imagenes/apps/mitosisvr.png" alt="Logo" width="40px"></div>
         <div class="d-icon-label">MitosisVR</div>
       </div>
-      <div class="d-icon" data-app="devos">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/DevOS/refs/heads/main/DevOS.png" alt="Logo" width="40px" style="border-radius: 5px;"></div>
+      <div class="d-icon" data-app="devos" data-tooltip="DevOS — AI Powered Linux Live">
+        <div class="d-icon-img"><img src="imagenes/apps/devos.png" alt="Logo" width="40px" style="border-radius: 5px;"></div>
         <div class="d-icon-label">DevOS</div>
       </div>
-      <div class="d-icon" data-app="emunav">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/EmuNAV/refs/heads/main/EmuNAV.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+      <div class="d-icon" data-app="emunav" data-tooltip="EmuNAV — Nintendo DS Emulator">
+        <div class="d-icon-img"><img src="imagenes/apps/emunav.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
         <div class="d-icon-label">EmuNAV</div>
       </div>
-      <div class="d-icon" data-app="navascript">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/NS.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+      <div class="d-icon" data-app="navascript" data-tooltip="NavaScript — Programming Language">
+        <div class="d-icon-img"><img src="imagenes/apps/navascript.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
         <div class="d-icon-label">NavaScript</div>
       </div>
-      <div class="d-icon" data-app="kid">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/AngelDev2343/refs/heads/main/777.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+      <div class="d-icon" data-app="kid" data-tooltip="777.exe — A Windows Virus">
+        <div class="d-icon-img"><img src="imagenes/apps/777.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
         <div class="d-icon-label">777.exe</div>
       </div>
-      <div class="d-icon" data-app="arcade">
-        <div class="d-icon-img"><img src="https://raw.githubusercontent.com/AngelDev2343/AngelDev2343/refs/heads/main/Arcade.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+      <div class="d-icon" data-app="arcade" data-tooltip="Angel Dev Arcade">
+        <div class="d-icon-img"><img src="imagenes/apps/arcade.png" alt="Logo" width="40px" style="border-radius: 4px;"></div>
         <div class="d-icon-label">Arcade</div>
       </div>
-      <div class="d-icon" data-app="music">
-        <div class="d-icon-img"><img src="https://img.freepik.com/vector-premium/icono-nota-cancion-pictograma-simple_764382-169717.jpg" alt="Logo" width="40px" style="border-radius: 4px;"></div>
+      <div class="d-icon" data-app="music" data-tooltip="AngelOS Music Player">
+        <div class="d-icon-img" style="font-size:28px">🎵</div>
         <div class="d-icon-label">Music Player</div>
       </div>
     </div>
@@ -191,9 +221,12 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
   <div class="start-menu-item" onclick="openWindow('terminal');closeStartMenu()">
     <span>&gt;_</span> <span data-i18n="start.terminal">Terminal</span>
   </div>
+  <div class="start-menu-item" onclick="openLanguagePicker();closeStartMenu()">
+    <span>🌐</span> <span data-i18n="start.language">Language</span>
+  </div>
   <div class="start-menu-sep"></div>
-  <div class="start-menu-item" onclick="location.href='https://github.com/AngelDev2343'" target="_blank">
-    <span><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="20px" style="border-radius: 50%"></span> <span data-i18n="start.github">GitHub</span>
+  <div class="start-menu-item" onclick="window.open('https://github.com/AngelDev2343','_blank')">
+    <span><img src="gifs/github.gif" width="20px" style="border-radius: 50%"></span> <span data-i18n="start.github">GitHub</span>
   </div>
   <div class="start-menu-sep"></div>
   <div class="start-menu-item danger" onclick="reboot()">
@@ -216,6 +249,7 @@ if (/Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.use
 <!-- ════════════════ NOTIFICATION ════════════════ -->
 <div class="notif" id="notif"></div>
 
+<script src="core.js" defer></script>
 <script src="lang.js" defer></script>
 <script src="script.js" defer></script>
 

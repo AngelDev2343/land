@@ -6,6 +6,7 @@ if (typeof window.t !== 'function') {
   window.applyLanguage = function(l) { window._osLang = l; };
 }
 
+
 // ══════════════════════════════════════════
 //  BOOT SEQUENCE
 // ══════════════════════════════════════════
@@ -36,12 +37,42 @@ const bootMessages = [
   ];
   
   let bootIdx = 0;
+  let bootTimer = null;
   const logEl = document.getElementById('boot-log');
   const barEl = document.getElementById('boot-bar');
-  
+
+  function showLogin() {
+    if (bootTimer) clearTimeout(bootTimer);
+    bootTimer = null;
+    const boot = document.getElementById('boot-screen');
+    boot.classList.add('hidden');
+    setTimeout(() => boot.classList.add('gone'), 700);
+    document.getElementById('login-screen').classList.remove('hidden');
+  }
+
+  function skipBoot() {
+    bootIdx = bootMessages.length;
+    if (logEl) logEl.innerHTML = '';
+    if (barEl) barEl.style.width = '100%';
+    window.markBootSkipped();
+    showLogin();
+  }
+
+  function initBootSkipButton() {
+    const boot = document.getElementById('boot-screen');
+    if (!boot || boot.querySelector('.boot-skip')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'boot-skip';
+    btn.setAttribute('data-i18n', 'ui.skipBoot');
+    btn.textContent = window.t('ui.skipBoot');
+    btn.addEventListener('click', skipBoot);
+    boot.appendChild(btn);
+  }
+
   function bootStep() {
     if (bootIdx >= bootMessages.length) {
-      setTimeout(showLogin, 800);
+      bootTimer = setTimeout(showLogin, 800);
       return;
     }
     const { t, cl } = bootMessages[bootIdx];
@@ -51,21 +82,19 @@ const bootMessages = [
     div.style.animationDelay = '0ms';
     logEl.appendChild(div);
     logEl.scrollTop = logEl.scrollHeight;
-  
+
     barEl.style.width = ((bootIdx / bootMessages.length) * 100) + '%';
     bootIdx++;
-  
+
     const delay = bootIdx < 10 ? 80 : bootIdx < 18 ? 50 : 120;
-    setTimeout(bootStep, delay);
+    bootTimer = setTimeout(bootStep, delay);
   }
-  
-  setTimeout(bootStep, 600);
-  
-  function showLogin() {
-    const boot = document.getElementById('boot-screen');
-    boot.classList.add('hidden');
-    setTimeout(() => boot.classList.add('gone'), 700);
-    document.getElementById('login-screen').classList.remove('hidden');
+
+  if (window.shouldSkipBoot && window.shouldSkipBoot()) {
+    showLogin();
+  } else {
+    initBootSkipButton();
+    bootTimer = setTimeout(bootStep, 600);
   }
   
   // ══════════════════════════════════════════
@@ -78,9 +107,20 @@ const bootMessages = [
       const loginScreen = document.getElementById('login-screen');
       loginScreen.classList.add('hidden');
       setTimeout(() => loginScreen.classList.add('gone'), 700);
-      document.getElementById('lang-screen').classList.remove('hidden');
+
+      const savedLang = window.getSavedLanguage && window.getSavedLanguage();
+      if (savedLang) window.applyLanguage(savedLang);
+      window.showLangScreen();
     }, 800);
   });
+
+  function enterDesktop() {
+    document.getElementById('desktop-screen').classList.remove('hidden');
+    startMatrixRain();
+    startClock();
+    if (window.initDesktopIconUX) window.initDesktopIconUX();
+    setTimeout(() => showNotif(window.t('notif.welcome')), 500);
+  }
   
 
   // ══════════════════════════════════════════
@@ -89,29 +129,45 @@ const bootMessages = [
   document.getElementById('lang-btn').addEventListener('click', function() {
     const selectedLang = document.querySelector('input[name="lang"]:checked').value;
     window.applyLanguage(selectedLang);
-    const langScreen = document.getElementById('lang-screen');
-    langScreen.classList.add('hidden');
-    setTimeout(() => langScreen.classList.add('gone'), 700);
-    document.getElementById('desktop-screen').classList.remove('hidden');
-    startMatrixRain();
-    startClock();
-    setTimeout(() => showNotif(window.t('notif.welcome')), 500);
+    window.hideLangScreen();
+    const desktop = document.getElementById('desktop-screen');
+    if (desktop.classList.contains('hidden')) {
+      enterDesktop();
+    } else {
+      showNotif(window.t('notif.langChanged'));
+    }
   });
+
+  function openLanguagePicker() {
+    window.showLangScreen();
+  }
+  window.openLanguagePicker = openLanguagePicker;
 
   // ══════════════════════════════════════════
   //  MATRIX RAIN
   // ══════════════════════════════════════════
+  let matrixRainInterval = null;
+
   function startMatrixRain() {
+    if (!window.motionAllowed()) return;
     const canvas = document.getElementById('matrix-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  
     const chars = 'アイウエオカキクケコ01ABCDEF#$%@!<>{}';
-    const cols = Math.floor(canvas.width / 20);
-    const drops = Array(cols).fill(1);
-  
-    setInterval(() => {
+    let cols = 0;
+    let drops = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.floor(canvas.width / 20);
+      drops = Array(cols).fill(1);
+    }
+
+    resizeCanvas();
+    if (matrixRainInterval) clearInterval(matrixRainInterval);
+
+    matrixRainInterval = setInterval(() => {
       ctx.fillStyle = 'rgba(0,0,0,0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#00ff41';
@@ -123,11 +179,11 @@ const bootMessages = [
         drops[i]++;
       });
     }, 60);
-  
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+
+    if (!canvas._rainResizeBound) {
+      canvas._rainResizeBound = true;
+      window.addEventListener('resize', resizeCanvas);
+    }
   }
   
   // ══════════════════════════════════════════
@@ -189,7 +245,7 @@ const bootMessages = [
             </div>
             <div class="project-links">
               <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://angelsperez.github.io/ia-offline/" target="_blank">[ Demo ]</a>
+              <a class="project-link" href="https://why-ia.vercel.app/" target="_blank">[ Demo ]</a>
             </div>
           </div>
           <div class="project-card">
@@ -326,36 +382,36 @@ const bootMessages = [
         </div>
         <div style="margin-bottom:12px;font-size:11px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.frontend')}</div>
         <div class="skills-grid" style="margin-bottom:20px">
-          <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png" width="26px"></span>HTML5</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://quintonparks.com/images/css.png" width="26px"></span>CSS3</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://cdn.iconscout.com/icon/free/png-512/javascript-2752148-2284965.png" width="26px"></span>JavaScript</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://web-creator.ru/technologies/kotlin.png" width="26px"></span>Kotlin</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://seekicon.com/free-icon-download/flutter_2.png" width="26px"></span>Flutter</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/html.png" width="26px"></span>HTML5</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/css.png" width="26px"></span>CSS3</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/js.png" width="26px"></span>JavaScript</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-kotlin.png" width="26px"></span>Kotlin</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-flutter.png" width="26px"></span>Flutter</div>
         </div>
         <div style="margin-bottom:12px;font-size:11px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.backend')}</div>
         <div class="skills-grid" style="margin-bottom:20px">
-          <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354238/python.svg" width="26px"></span>Python</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/NS.png" width="26px"></span>NavaScript</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://user-images.githubusercontent.com/2877584/229525885-d6f06474-d560-4f34-8b63-cae8f7265008.svg" width="26px"></span>Node.js</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/452088/php.svg" width="26px"></span>PHP</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://seekicon.com/free-icon-download/django_3.png" width="26px"></span>Django</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/dart-programming-language-icon.png" width="26px"></span>Dart</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://cdn.creazilla.com/icons/3253516/bash-icon-icon-md.png" width="26px"></span>Bash</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://images.icon-icons.com/1495/PNG/512/godot_103035.png" width="26px"></span>GDScript</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/python.png" width="26px"></span>Python</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/apps/navascript.png" width="26px"></span>NavaScript</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/node.png" width="26px"></span>Node.js</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/php.png" width="26px"></span>PHP</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/django.webp" width="26px"></span>Django</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-dart.png" width="26px"></span>Dart</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-bash.png" width="26px"></span>Bash</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-godot.png" width="26px"></span>GDScript</div>
         </div>
         <div style="margin-bottom:12px;font-size:11px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.databases')}</div>
         <div class="skills-grid" style="margin-bottom:20px">
-          <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354099/mysql.svg" width="26px"></span>MySQL</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/mongodb.png" width="30px"></span>MongoDB</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://miro.medium.com/v2/resize:fit:1400/1*5Hnnv0awfSv0BGcq1C522w.png" width="30px"></span>phpMyAdmin</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/MySQL.png" width="26px"></span>MySQL</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/mongodb.png" width="30px"></span>MongoDB</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/phpmyadmin.png" width="30px"></span>phpMyAdmin</div>
         </div>
         <div style="margin-bottom:12px;font-size:11px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.tools')}</div>
         <div class="skills-grid">
-          <div class="skill-badge"><span class="sk-icon"><img src="https://icons.veryicon.com/png/o/business/vscode-program-item-icon/vscode.png" width="30px"></span>VS Code</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="30px" style="border-radius: 50%"></span>Git/GitHub</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://cdn2.iconfinder.com/data/icons/pack1-baco-flurry-icons-style/512/XAMPP.png" width="30px"></span>XAMPP</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://icons.veryicon.com/png/Application/Baco%20Flurry%202/Filezilla%202.png" width="30px"></span>FileZilla</div>
-          <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/fedora-project-icon.png" width="30px"></span>Fedora Linux</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/visual.png" width="30px"></span>VS Code</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="gifs/github.gif" width="30px" style="border-radius: 50%"></span>Git/GitHub</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/xampp.png" width="30px"></span>XAMPP</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/filezilla.png" width="30px"></span>FileZilla</div>
+          <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons8-fedora-100.png" width="30px"></span>Fedora Linux</div>
         </div>
       `
     },
@@ -369,7 +425,7 @@ const bootMessages = [
           <span class="prompt">angel@angelos:~$ </span><span class="cmd">./contact.sh --list</span>
         </div>
         <div class="contact-item" onclick="copyEmail()">
-          <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/email.png" width="25px" style="border-radius: 50%"></div>
+          <div class="contact-icon"><img src="imagenes/email.png" width="25px" style="border-radius: 50%"></div>
           <div class="contact-info">
             <label>Email</label>
             <span>23angelsperez@gmail.com</span>
@@ -377,15 +433,15 @@ const bootMessages = [
           <span style="font-size:11px;color:var(--text-muted);margin-left:auto">${window.t('contact.copy')}</span>
         </div>
         <div class="contact-item" onclick="window.open('https://github.com/AngelDev2343','_blank')">
-          <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="25px" style="border-radius: 50%"></div>
+          <div class="contact-icon"><img src="gifs/github.gif" width="25px" style="border-radius: 50%"></div>
           <div class="contact-info">
             <label>GitHub</label>
             <span>github.com/AngelDev2343</span>
           </div>
-          <span style="font-size:11px;color:var(--text-muted);margin-left:auto">[abrir →]</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-left:auto">${window.t('contact.open')}</span>
         </div>
         <div class="contact-item" onclick="window.open('https://www.instagram.com/angl.perz/','_blank')">
-          <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/social.png" width="25px" style="border-radius: 50%"></div>
+          <div class="contact-icon"><img src="imagenes/social.png" width="25px" style="border-radius: 50%"></div>
           <div class="contact-info">
             <label>Instagram</label>
             <span>@angl.perz</span>
@@ -423,10 +479,11 @@ const bootMessages = [
       onOpen: () => {
         setTimeout(() => {
           const inp = document.getElementById('term-input');
-          if (inp) {
-            inp.focus();
-            inp.addEventListener('keydown', handleTerminalInput);
-          }
+          if (!inp) return;
+          if (inp._termHandler) inp.removeEventListener('keydown', inp._termHandler);
+          inp._termHandler = handleTerminalInput;
+          inp.focus();
+          inp.addEventListener('keydown', inp._termHandler);
         }, 100);
       }
     },
@@ -444,7 +501,7 @@ const bootMessages = [
             <div class="preview-url">why-ia.vercel.app</div>
           </div>
                 <video 
-                  src="https://github.com/user-attachments/assets/ca696e85-2d6d-4b2c-b012-57347b33bf7f"
+                  src="media/whyai.mp4"
                   style="width: 100%; height: 100%; object-fit: cover; display: block;"
                   autoplay
                   loop
@@ -478,7 +535,7 @@ const bootMessages = [
             <div class="preview-url">angeldev2343.github.io/Bio3D/</div>
           </div>
                 <video 
-                  src="https://github.com/user-attachments/assets/ca9c58ff-6be7-4d7a-a1cc-e9df7ab56f73"
+                  src="media/bio3d.mp4"
                   style="width: 100%; height: 100%; object-fit: cover; display: block;"
                   autoplay
                   loop
@@ -511,7 +568,7 @@ const bootMessages = [
             <div class="preview-dot" style="background:#00ff41"></div>
             <div class="preview-url">cerimex.local / tienda</div>
           </div>
-                  <img src="https://github.com/AngelDev2343/land/blob/main/gifs/cerimex.gif?raw=true" style="width: 100%; height: auto; min-height: 500px;">
+                  ${window.previewVideo('media/cerimex.webm', 280)}
           </div>
         <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
           ${window.t('proj.cerimex.desc')}
@@ -537,7 +594,7 @@ const bootMessages = [
               <div class="preview-dot" style="background:#00ff41"></div>
               <div class="preview-url">twin-messenger.great-site.net</div>
           </div>
-          <img src="https://github.com/AngelDev2343/land/blob/main/gifs/twin.gif?raw=true" style="width: 100%; height: auto; min-height: 300px;">
+          ${window.previewVideo('media/twin.webm', 280)}
           </div>
   
           <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -567,7 +624,7 @@ const bootMessages = [
                   <div class="preview-dot" style="background:#00ff41"></div>
                   <div class="preview-url">angeldev2343.pythonanywhere.com</div>
               </div>
-              <img src="https://github.com/AngelDev2343/land/blob/main/gifs/fender.gif?raw=true" style="width: 100%; height: auto; min-height: 300px;">
+              ${window.previewVideo('media/fender.webm', 280)}
               </div>
   
               <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -596,9 +653,9 @@ const bootMessages = [
                   <div class="preview-dot" style="background:#ff5555"></div>
                   <div class="preview-dot" style="background:#ffaa00"></div>
                   <div class="preview-dot" style="background:#00ff41"></div>
-                  <div class="preview-url">github.com/AngelSPerez/flutter-instalacion</div>
+                  <div class="preview-url">github.com/AngelDev2343/FlutterTool</div>
               </div>
-              <img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/power.PNG" style="width: 100%; height: auto; min-height: 300px;">
+              <img src="imagenes/previews/fluttertool.png" style="width: 100%; height: auto; min-height: 300px;">
               </div>
   
               <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -676,10 +733,10 @@ const bootMessages = [
                   </div>
   
                   <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">
-                      <img src="https://github.com/user-attachments/assets/ec3b255a-e7af-4938-bdc6-8b48fb647906" style="width:100%;border-radius:4px;">
-                      <img src="https://github.com/user-attachments/assets/906e8306-2954-43ca-ab17-c5012813e199" style="width:100%;border-radius:4px;">
-                      <img src="https://github.com/user-attachments/assets/68d99013-a429-4672-b6da-407086352e9a" style="width:100%;border-radius:4px;">
-                      <img src="https://github.com/user-attachments/assets/72300ac9-6141-4611-a162-3d0a19cc2c15" style="width:100%;border-radius:4px;">
+                      <img src="imagenes/previews/market-1.png" style="width:100%;border-radius:4px;">
+                      <img src="imagenes/previews/market-2.png" style="width:100%;border-radius:4px;">
+                      <img src="imagenes/previews/market-3.png" style="width:100%;border-radius:4px;">
+                      <img src="imagenes/previews/market-4.png" style="width:100%;border-radius:4px;">
                   </div>
               </div>
   
@@ -717,7 +774,7 @@ const bootMessages = [
       
                   <div style="width:100%; aspect-ratio:16/9; overflow:hidden;">
                       <video 
-                          src="https://github.com/user-attachments/assets/903e0fd6-d83f-4e73-83e9-f1dfa3ee9b2e"
+                          src="media/mitosisvr.mp4"
                           style="width: 100%; height: 100%; object-fit: cover; display: block;"
                           autoplay
                           loop
@@ -728,7 +785,6 @@ const bootMessages = [
               </div>
       
               <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
-                  Experiencia educativa en <span class="hi">realidad virtual</span> desarrollada en <span class="hi">Godot 4</span> 
                   ${window.t('proj.mitosis.desc')}
               </div>
       
@@ -761,10 +817,10 @@ const bootMessages = [
                 </div>
     
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">
-                    <img src="https://github.com/user-attachments/assets/d0865267-f9a9-4b82-b835-2cfca1edf65e" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
-                    <img src="https://github.com/user-attachments/assets/a1d66433-b64d-4298-9201-9064c39e72cd" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
-                    <img src="https://github.com/user-attachments/assets/85012da8-7b14-42b4-8557-d6c1c4a61e54" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
-                    <img src="https://github.com/user-attachments/assets/a96ff2f4-1435-4c88-b8da-f27dfac31e5c" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
+                    <img src="imagenes/previews/devos-1.png" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
+                    <img src="imagenes/previews/devos-2.png" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
+                    <img src="imagenes/previews/devos-3.png" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
+                    <img src="imagenes/previews/devos-4.png" style="width:100%;border-radius:4px;object-fit:cover;aspect-ratio:16/9;">
                 </div>
             </div>
     
@@ -775,7 +831,7 @@ const bootMessages = [
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
                 <a class="project-link" href="https://github.com/AngelDev2343/DevOS" target="_blank">[ GitHub ]</a>
                 <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">${window.t('proj.btn.iso')}</a>
-                <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Build_Kit_v1.0/devos-build-kit-en-final.zip" target="_blank">[ Build Kit ]</a>
+                <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Build_Kit_v1.0/devos-build-kit-en-final.zip" target="_blank">${window.t('proj.btn.buildkit')}</a>
             </div>
     
             <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -801,7 +857,7 @@ const bootMessages = [
                     <div class="preview-url">angeldev2343.github.io / emunav</div>
                 </div>
     
-                <img src="https://raw.githubusercontent.com/AngelDev2343/EmuNAV/refs/heads/main/Emu.PNG" style="width: 100%; height: auto; min-height: 400px;">
+                <img src="imagenes/previews/emunav.png" style="width: 100%; height: auto; min-height: 400px;">
             </div>
     
             <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -836,7 +892,7 @@ const bootMessages = [
                     <div class="preview-url">angeldev2343.github.io / navascript</div>
                 </div>
     
-                    <img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/images/image.png" style="width:100%;border-radius:0px;object-fit:cover;aspect-ratio:16/9;">
+                    <img src="imagenes/previews/navascript.png" style="width:100%;border-radius:0px;object-fit:cover;aspect-ratio:16/9;">
 
             </div>
     
@@ -873,10 +929,12 @@ const bootMessages = [
     kid: {
         title: () => '777.exe - A Windows Virus',
         width: 650, height: 520,
-        content: () => ` 
+        content: () => `
+                <div style="display:flex;flex-direction:column;height:100%;gap:8px">
                 <div class="section-title">777.exe - VIRUS</div>
-                <div class="section-title">${window.t('proj.kid.desc')}</div>
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <p style="font-size:11px;color:var(--text-dim);line-height:1.6;flex-shrink:0">${window.t('proj.kid.desc')}</p>
+                <iframe style="flex:1;min-height:240px;width:100%;border:none" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
         `
     },
 
@@ -942,6 +1000,8 @@ const bootMessages = [
     win.classList.add('focused');
   
     if (def.onOpen) def.onOpen();
+    if (window.secureExternalLinks) window.secureExternalLinks(win);
+    if (window.initIframeLoaders) window.initIframeLoaders(win);
   }
   
   function closeWindow(id) {
@@ -1051,8 +1111,11 @@ const bootMessages = [
   
     document.addEventListener('mousemove', e => {
       if (!dragging) return;
-      win.style.left = Math.max(0, startL + e.clientX - startX) + 'px';
-      win.style.top  = Math.max(0, startT + e.clientY - startY) + 'px';
+      const desktop = document.getElementById('desktop-area');
+      const maxL = Math.max(0, desktop.clientWidth - win.offsetWidth);
+      const maxT = Math.max(0, desktop.clientHeight - win.offsetHeight);
+      win.style.left = Math.max(0, Math.min(maxL, startL + e.clientX - startX)) + 'px';
+      win.style.top  = Math.max(0, Math.min(maxT, startT + e.clientY - startY)) + 'px';
     });
   
     document.addEventListener('mouseup', () => { dragging = false; });
@@ -1139,7 +1202,7 @@ const bootMessages = [
     inp.value = '';
   
     const line = document.createElement('div');
-    line.innerHTML = `<span class="prompt">angel@angelos:~$ </span><span class="cmd">${cmd}</span>`;
+    line.innerHTML = `<span class="prompt">angel@angelos:~$ </span><span class="cmd">${window.escapeHtml(cmd)}</span>`;
     out.appendChild(line);
   
     const res = document.createElement('div');
@@ -1173,15 +1236,32 @@ const bootMessages = [
       const wrap = document.createElement('div');
       wrap.className = 'term-rain-wrap';
       wrap.style.cssText = 'position:relative;margin-bottom:8px;';
-      wrap.innerHTML = `
-        <canvas id="${rainId}" style="display:block;width:100%;height:160px;border:1px solid var(--border);border-radius:4px;background:#000;"></canvas>
-        <button onclick="
-          const c=document.getElementById('${rainId}');
-          if(c._rainStop){c._rainStop();this.textContent=window.t('term.rain.start');}
-          else{startTermRain('${rainId}');this.textContent='[ DETENER ]';}
-        " style="margin-top:6px;background:transparent;border:1px solid var(--green);color:var(--green);font-family:inherit;font-size:11px;padding:3px 10px;cursor:pointer;">${window.t('term.rain.stop')}</button>
-        <span style="font-size:10px;color:var(--text-muted);margin-left:10px">${window.t('term.rain.status')}</span>
-      `;
+
+      const canvas = document.createElement('canvas');
+      canvas.id = rainId;
+      canvas.style.cssText = 'display:block;width:100%;height:160px;border:1px solid var(--border);border-radius:4px;background:#000;';
+
+      const btn = document.createElement('button');
+      btn.style.cssText = 'margin-top:6px;background:transparent;border:1px solid var(--green);color:var(--green);font-family:inherit;font-size:11px;padding:3px 10px;cursor:pointer;';
+      btn.textContent = window.t('term.rain.stop');
+      btn.addEventListener('click', function () {
+        const c = document.getElementById(rainId);
+        if (c._rainStop) {
+          c._rainStop();
+          this.textContent = window.t('term.rain.start');
+        } else {
+          startTermRain(rainId);
+          this.textContent = window.t('term.rain.stop');
+        }
+      });
+
+      const status = document.createElement('span');
+      status.style.cssText = 'font-size:10px;color:var(--text-muted);margin-left:10px';
+      status.textContent = window.t('term.rain.status');
+
+      wrap.appendChild(canvas);
+      wrap.appendChild(btn);
+      wrap.appendChild(status);
       res.appendChild(wrap);
       out.appendChild(res);
 
@@ -1196,7 +1276,7 @@ const bootMessages = [
       if (val === '__CLEAR__') { out.innerHTML = ''; }
       else { res.innerHTML = val; out.appendChild(res); }
     } else {
-      res.innerHTML = `<span style="color:#ff4444">${window.t('term.err').replace('{cmd}', cmd)}</span>`;
+      res.innerHTML = `<span style="color:#ff4444">${window.t('term.err').replace('{cmd}', window.escapeHtml(cmd))}</span>`;
       out.appendChild(res);
     }
   
@@ -1246,14 +1326,9 @@ const bootMessages = [
     setTimeout(() => n.classList.remove('show'), 3000);
   }
   
-  function copyEmail() {
-    const email = '23angelsperez@gmail.com';
-    navigator.clipboard.writeText(email).catch(() => {});
-    showNotif(window.t('notif.email'));
-  }
-  
   function arrangeWindows() {
     const ids = Object.keys(windows);
+    if (!ids.length) return;
     const desktop = document.getElementById('desktop-area');
     const W = desktop.clientWidth / ids.length;
     ids.forEach((id, i) => {
@@ -1286,12 +1361,29 @@ const bootMessages = [
   });
   
   // ══════════════════════════════════════════
-  //  DESKTOP ICON CLICKS (event delegation)
+  //  DESKTOP ICON TOOLTIPS
   // ══════════════════════════════════════════
-  document.addEventListener('click', function(e) {
-    const icon = e.target.closest('.d-icon[data-app]');
-    if (icon) {
-      const app = icon.dataset.app;
-      if (app) openWindow(app);
-    }
+  const tooltipEl = document.getElementById('tooltip');
+
+  function showTooltip(e, text) {
+    if (!tooltipEl || !text) return;
+    tooltipEl.textContent = text;
+    tooltipEl.style.left = (e.clientX + 14) + 'px';
+    tooltipEl.style.top  = (e.clientY + 14) + 'px';
+    tooltipEl.classList.add('show');
+  }
+
+  function hideTooltip() {
+    if (tooltipEl) tooltipEl.classList.remove('show');
+  }
+
+  document.querySelectorAll('.d-icon[data-app]').forEach(icon => {
+    const label = icon.dataset.tooltip || icon.querySelector('.d-icon-label')?.textContent?.trim();
+    icon.addEventListener('mouseenter', e => showTooltip(e, label));
+    icon.addEventListener('mousemove', e => {
+      if (!tooltipEl?.classList.contains('show')) return;
+      tooltipEl.style.left = (e.clientX + 14) + 'px';
+      tooltipEl.style.top  = (e.clientY + 14) + 'px';
+    });
+    icon.addEventListener('mouseleave', hideTooltip);
   });

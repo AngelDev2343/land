@@ -6,6 +6,7 @@ if (typeof window.t !== 'function') {
   window.applyLanguage = function(l) { window._osLang = l; };
 }
 
+
 // ══════════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════════
@@ -30,12 +31,44 @@ const bootMessages = [
 ];
 
 let bootIdx = 0;
+let bootTimer = null;
 const logEl = document.getElementById('boot-log');
 const barEl = document.getElementById('boot-bar');
 
+function showLogin() {
+  if (bootTimer) clearTimeout(bootTimer);
+  bootTimer = null;
+  const boot = document.getElementById('boot-screen');
+  boot.classList.add('hidden');
+  setTimeout(() => boot.classList.add('gone'), 600);
+  const login = document.getElementById('login-screen');
+  login.classList.remove('hidden');
+  startLoginRain();
+}
+
+function skipBoot() {
+  bootIdx = bootMessages.length;
+  if (logEl) logEl.innerHTML = '';
+  if (barEl) barEl.style.width = '100%';
+  window.markBootSkipped();
+  showLogin();
+}
+
+function initBootSkipButton() {
+  const boot = document.getElementById('boot-screen');
+  if (!boot || boot.querySelector('.boot-skip')) return;
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'boot-skip';
+  btn.setAttribute('data-i18n', 'ui.skipBoot');
+  btn.textContent = window.t('ui.skipBoot');
+  btn.addEventListener('click', skipBoot);
+  boot.appendChild(btn);
+}
+
 function bootStep() {
   if (bootIdx >= bootMessages.length) {
-    setTimeout(showLogin, 600);
+    bootTimer = setTimeout(showLogin, 600);
     return;
   }
   const { t, cl } = bootMessages[bootIdx];
@@ -47,34 +80,42 @@ function bootStep() {
   barEl.style.width = ((bootIdx / bootMessages.length) * 100) + '%';
   bootIdx++;
   const delay = bootIdx < 8 ? 80 : bootIdx < 13 ? 50 : 100;
-  setTimeout(bootStep, delay);
+  bootTimer = setTimeout(bootStep, delay);
 }
 
-setTimeout(bootStep, 400);
-
-function showLogin() {
-  const boot = document.getElementById('boot-screen');
-  boot.classList.add('hidden');
-  setTimeout(() => boot.classList.add('gone'), 600);
-  const login = document.getElementById('login-screen');
-  login.classList.remove('hidden');
-  startLoginRain();
+if (window.shouldSkipBoot && window.shouldSkipBoot()) {
+  showLogin();
+} else {
+  initBootSkipButton();
+  bootTimer = setTimeout(bootStep, 400);
 }
 
 // ══════════════════════════════════════════
 //  LOGIN RAIN
 // ══════════════════════════════════════════
+let loginRainInterval = null;
+
 function startLoginRain() {
+  if (!window.motionAllowed()) return;
   const canvas = document.getElementById('login-rain');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
   const chars = 'アイウエオ01ABCDEF#$%@!';
   const fontSize = 14;
-  const cols = Math.floor(canvas.width / fontSize);
-  const drops = Array(cols).fill(0).map(() => Math.random() * -30);
+  let cols = 0;
+  let drops = [];
 
-  setInterval(() => {
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / fontSize);
+    drops = Array(cols).fill(0).map(() => Math.random() * -30);
+  }
+
+  resizeCanvas();
+  if (loginRainInterval) clearInterval(loginRainInterval);
+
+  loginRainInterval = setInterval(() => {
     ctx.fillStyle = 'rgba(0,0,0,0.06)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00ff41';
@@ -86,6 +127,12 @@ function startLoginRain() {
       drops[i]++;
     });
   }, 60);
+
+  if (!canvas._rainResizeBound) {
+    canvas._rainResizeBound = true;
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -95,17 +142,23 @@ document.getElementById('login-btn').addEventListener('click', function() {
   this.textContent = window.t('login.auth');
   this.disabled = true;
   setTimeout(() => {
-    // Hide login
     const loginScreen = document.getElementById('login-screen');
     loginScreen.classList.add('hidden');
     setTimeout(() => loginScreen.classList.add('gone'), 600);
 
-    // Show lang screen — force inline styles as failsafe
-    const langScreen = document.getElementById('lang-screen');
-    langScreen.classList.remove('hidden');
-    langScreen.style.cssText = 'display:flex!important;opacity:1!important;visibility:visible!important;position:fixed!important;inset:0!important;z-index:10000!important;align-items:center;justify-content:center;background:var(--bg1);padding:20px;';
+    const savedLang = window.getSavedLanguage && window.getSavedLanguage();
+    if (savedLang) window.applyLanguage(savedLang);
+    window.showLangScreen();
   }, 700);
 });
+
+function enterHome() {
+  document.getElementById('home-screen').classList.remove('hidden');
+  startMatrixRain();
+  startClock();
+  startBattery();
+  setTimeout(() => showNotif(window.t('notif.welcome')), 400);
+}
 
 // ══════════════════════════════════════════
 //  LANGUAGE SELECTION
@@ -114,33 +167,47 @@ document.getElementById('lang-btn').addEventListener('click', function() {
   const selectedLang = document.querySelector('input[name="lang"]:checked').value;
   window.applyLanguage(selectedLang);
 
-  // Hide lang screen
-  const langScreen = document.getElementById('lang-screen');
-  langScreen.classList.add('hidden');
-  langScreen.style.cssText = '';
-  setTimeout(() => langScreen.classList.add('gone'), 600);
-
-  // Show home
+  window.hideLangScreen();
   const home = document.getElementById('home-screen');
-  home.classList.remove('hidden');
-  startMatrixRain();
-  startClock();
-  startBattery();
-  setTimeout(() => showNotif(window.t('notif.welcome')), 400);
+  if (home.classList.contains('hidden')) {
+    enterHome();
+  } else {
+    showNotif(window.t('notif.langChanged'));
+  }
 });
+
+function openLanguagePicker() {
+  window.showLangScreen();
+}
+window.openLanguagePicker = openLanguagePicker;
+
+document.getElementById('lang-toggle')?.addEventListener('click', openLanguagePicker);
 
 // ══════════════════════════════════════════
 //  MATRIX RAIN
 // ══════════════════════════════════════════
+let matrixRainInterval = null;
+
 function startMatrixRain() {
+  if (!window.motionAllowed()) return;
   const canvas = document.getElementById('matrix-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
   const chars = 'アイウエオカキクケコ01ABCDEF#$%@!<>{}';
-  const cols = Math.floor(canvas.width / 20);
-  const drops = Array(cols).fill(1);
-  setInterval(() => {
+  let cols = 0;
+  let drops = [];
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / 20);
+    drops = Array(cols).fill(1);
+  }
+
+  resizeCanvas();
+  if (matrixRainInterval) clearInterval(matrixRainInterval);
+
+  matrixRainInterval = setInterval(() => {
     ctx.fillStyle = 'rgba(0,0,0,0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#00ff41';
@@ -152,6 +219,12 @@ function startMatrixRain() {
       drops[i]++;
     });
   }, 70);
+
+  if (!canvas._rainResizeBound) {
+    canvas._rainResizeBound = true;
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -166,7 +239,7 @@ function startClock() {
     el.textContent = h + ':' + m;
   }
   tick();
-  setInterval(tick, 10000);
+  setInterval(tick, 1000);
 }
 
 function startBattery() {
@@ -259,6 +332,8 @@ function openApp(id) {
   requestAnimationFrame(() => panel.classList.add('open'));
 
   if (def.onOpen) setTimeout(def.onOpen, 150);
+  if (window.secureExternalLinks) window.secureExternalLinks(panelBody);
+  if (window.initIframeLoaders) window.initIframeLoaders(panelBody);
 }
 
 function closeApp() {
@@ -317,7 +392,7 @@ const appDefs = window.appDefs = {
           <div style="margin-bottom:8px"><span class="tag">JavaScript</span><span class="tag">WebAI</span><span class="tag">Privacy</span></div>
           <div class="project-links">
             <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
-            <a class="project-link" href="https://angelsperez.github.io/ia-offline/" target="_blank">[ Demo ]</a>
+            <a class="project-link" href="https://why-ia.vercel.app/" target="_blank">[ Demo ]</a>
           </div>
         </div>
         <div class="project-card">
@@ -431,35 +506,35 @@ const appDefs = window.appDefs = {
       </div>
       <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.frontend')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
-        <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/html-icon.png"></span>HTML5</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://quintonparks.com/images/css.png"></span>CSS3</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://cdn.iconscout.com/icon/free/png-512/javascript-2752148-2284965.png"></span>JavaScript</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://web-creator.ru/technologies/kotlin.png"></span>Kotlin</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://seekicon.com/free-icon-download/flutter_2.png"></span>Flutter</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/html.png"></span>HTML5</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/css.png"></span>CSS3</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/js.png"></span>JavaScript</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-kotlin.png"></span>Kotlin</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-flutter.png"></span>Flutter</div>
       </div>
       <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.backend')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
-        <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354238/python.svg"></span>Python</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/NS.png"></span>NavaScript</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://user-images.githubusercontent.com/2877584/229525885-d6f06474-d560-4f34-8b63-cae8f7265008.svg"></span>Node.js</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/452088/php.svg"></span>PHP</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://seekicon.com/free-icon-download/django_3.png"></span>Django</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/dart-programming-language-icon.png"></span>Dart</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://cdn.creazilla.com/icons/3253516/bash-icon-icon-md.png"></span>Bash</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://images.icon-icons.com/1495/PNG/512/godot_103035.png"></span>GDScript</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/python.png"></span>Python</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/apps/navascript.png"></span>NavaScript</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/node.png"></span>Node.js</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/php.png"></span>PHP</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/django.webp"></span>Django</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-dart.png"></span>Dart</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-bash.png"></span>Bash</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons-godot.png"></span>GDScript</div>
       </div>
       <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.databases')}</div>
       <div class="skills-grid" style="margin-bottom:16px">
-        <div class="skill-badge"><span class="sk-icon"><img src="https://www.svgrepo.com/show/354099/mysql.svg"></span>MySQL</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/mongodb.png"></span>MongoDB</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://miro.medium.com/v2/resize:fit:1400/1*5Hnnv0awfSv0BGcq1C522w.png"></span>phpMyAdmin</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/MySQL.png"></span>MySQL</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/mongodb.png"></span>MongoDB</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/phpmyadmin.png"></span>phpMyAdmin</div>
       </div>
       <div style="margin-bottom:10px;font-size:10px;color:var(--text-muted);letter-spacing:2px">${window.t('skills.tools')}</div>
       <div class="skills-grid">
-        <div class="skill-badge"><span class="sk-icon"><img src="https://icons.veryicon.com/png/o/business/vscode-program-item-icon/vscode.png"></span>VS Code</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" style="border-radius:50%"></span>Git/GitHub</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://cdn2.iconfinder.com/data/icons/pack1-baco-flurry-icons-style/512/XAMPP.png"></span>XAMPP</div>
-        <div class="skill-badge"><span class="sk-icon"><img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/fedora-project-icon.png"></span>Fedora</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/visual.png"></span>VS Code</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="gifs/github.gif" style="border-radius:50%"></span>Git/GitHub</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/xampp.png"></span>XAMPP</div>
+        <div class="skill-badge"><span class="sk-icon"><img src="imagenes/icons8-fedora-100.png"></span>Fedora</div>
       </div>
     `
   },
@@ -471,8 +546,8 @@ const appDefs = window.appDefs = {
       <div style="font-size:11px;color:var(--text-dim);margin-bottom:16px">
         <span class="prompt">angel@angelos:~$ </span><span class="cmd">./contact.sh --list</span>
       </div>
-      <div class="contact-item" onclick="navigator.clipboard&&navigator.clipboard.writeText('23angelsperez@gmail.com').then(()=>showNotif(window.t('notif.email')))">
-        <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/email.png" width="22" style="border-radius:50%"></div>
+      <div class="contact-item" onclick="copyEmail()">
+        <div class="contact-icon"><img src="imagenes/email.png" width="22" style="border-radius:50%"></div>
         <div class="contact-info">
           <label>Email</label>
           <span>23angelsperez@gmail.com</span>
@@ -480,7 +555,7 @@ const appDefs = window.appDefs = {
         <span style="font-size:10px;color:var(--text-muted);margin-left:auto">${window.t('contact.copy')}</span>
       </div>
       <div class="contact-item" onclick="window.open('https://github.com/AngelDev2343','_blank')">
-        <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/gifs/github.gif" width="22" style="border-radius:50%"></div>
+        <div class="contact-icon"><img src="gifs/github.gif" width="22" style="border-radius:50%"></div>
         <div class="contact-info">
           <label>GitHub</label>
           <span>AngelDev2343</span>
@@ -488,7 +563,7 @@ const appDefs = window.appDefs = {
         <span style="font-size:10px;color:var(--text-muted);margin-left:auto">${window.t('contact.open')}</span>
       </div>
       <div class="contact-item" onclick="window.open('https://www.instagram.com/angl.perz/','_blank')">
-        <div class="contact-icon"><img src="https://raw.githubusercontent.com/AngelDev2343/land/refs/heads/main/imagenes/social.png" width="22" style="border-radius:50%"></div>
+        <div class="contact-icon"><img src="imagenes/social.png" width="22" style="border-radius:50%"></div>
         <div class="contact-info">
           <label>Instagram</label>
           <span>@angl.perz</span>
@@ -524,7 +599,10 @@ const appDefs = window.appDefs = {
     `,
     onOpen: () => {
       const inp = document.getElementById('term-input');
-      if (inp) inp.addEventListener('keydown', handleTerminalInput);
+      if (!inp) return;
+      if (inp._termHandler) inp.removeEventListener('keydown', inp._termHandler);
+      inp._termHandler = handleTerminalInput;
+      inp.addEventListener('keydown', inp._termHandler);
     }
   },
 
@@ -537,9 +615,9 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#ff5555"></div>
           <div class="preview-dot" style="background:#ffaa00"></div>
           <div class="preview-dot" style="background:#00ff41"></div>
-          <div class="preview-url">angelsperez.github.io/ia-offline/</div>
+          <div class="preview-url">why-ia.vercel.app</div>
         </div>
-        <video src="https://github.com/user-attachments/assets/ca696e85-2d6d-4b2c-b012-57347b33bf7f"
+        <video src="media/whyai.mp4"
           style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block"
           autoplay loop muted playsinline></video>
       </div>
@@ -548,7 +626,7 @@ const appDefs = window.appDefs = {
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
-        <a class="project-link" href="https://angelsperez.github.io/ia-offline/" target="_blank">[ Demo ]</a>
+        <a class="project-link" href="https://why-ia.vercel.app/" target="_blank">[ Demo ]</a>
       </div>
       <div><span class="tag">JavaScript</span><span class="tag">WebAI</span><span class="tag">Privacy-First</span></div>
     `
@@ -565,7 +643,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">angeldev2343.github.io/Bio3D/</div>
         </div>
-        <video src="https://github.com/user-attachments/assets/ca9c58ff-6be7-4d7a-a1cc-e9df7ab56f73"
+        <video src="media/bio3d.mp4"
           style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block"
           autoplay loop muted playsinline></video>
       </div>
@@ -591,7 +669,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">cerimex.local / tienda</div>
         </div>
-        <img src="https://github.com/AngelDev2343/land/blob/main/gifs/cerimex.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        ${window.previewVideo('media/cerimex.webm', 200)}
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.cerimex.detail')}
@@ -614,7 +692,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">twin-messenger.great-site.net</div>
         </div>
-        <img src="https://github.com/AngelDev2343/land/blob/main/gifs/twin.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        ${window.previewVideo('media/twin.webm', 200)}
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.twin.detail')}
@@ -638,7 +716,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">angeldev2343.pythonanywhere.com</div>
         </div>
-        <img src="https://github.com/AngelDev2343/land/blob/main/gifs/fender.gif?raw=true" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        ${window.previewVideo('media/fender.webm', 200)}
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.fender.detail')}
@@ -662,7 +740,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">github.com/AngelDev2343/FlutterTool</div>
         </div>
-        <img src="https://raw.githubusercontent.com/AngelDev2343/FlutterTool/refs/heads/main/power.PNG" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        <img src="imagenes/previews/fluttertool.png" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.flutter.detail')}
@@ -703,8 +781,8 @@ const appDefs = window.appDefs = {
           <div class="preview-url">android / facebook marketplace</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--bg3)">
-          <img src="https://github.com/user-attachments/assets/ec3b255a-e7af-4938-bdc6-8b48fb647906" style="width:100%;border-radius:3px">
-          <img src="https://github.com/user-attachments/assets/906e8306-2954-43ca-ab17-c5012813e199" style="width:100%;border-radius:3px">
+          <img src="imagenes/previews/market-1.png" style="width:100%;border-radius:3px">
+          <img src="imagenes/previews/market-2.png" style="width:100%;border-radius:3px">
         </div>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -729,7 +807,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">mitosis1.netlify.app</div>
         </div>
-        <video src="https://github.com/user-attachments/assets/903e0fd6-d83f-4e73-83e9-f1dfa3ee9b2e"
+        <video src="media/mitosisvr.mp4"
           style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block"
           autoplay loop muted playsinline></video>
       </div>
@@ -756,8 +834,8 @@ const appDefs = window.appDefs = {
           <div class="preview-url">github.com / DevOS Live ISO</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--bg3)">
-          <img src="https://github.com/user-attachments/assets/a1d66433-b64d-4298-9201-9064c39e72cd" style="width:100%;border-radius:3px;object-fit:cover;aspect-ratio:16/9">
-          <img src="https://github.com/user-attachments/assets/85012da8-7b14-42b4-8557-d6c1c4a61e54" style="width:100%;border-radius:3px;object-fit:cover;aspect-ratio:16/9">
+          <img src="imagenes/previews/devos-2.png" style="width:100%;border-radius:3px;object-fit:cover;aspect-ratio:16/9">
+          <img src="imagenes/previews/devos-3.png" style="width:100%;border-radius:3px;object-fit:cover;aspect-ratio:16/9">
         </div>
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -782,7 +860,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">angeldev2343.github.io/emunav</div>
         </div>
-        <img src="https://raw.githubusercontent.com/AngelDev2343/EmuNAV/refs/heads/main/Emu.PNG" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        <img src="imagenes/previews/emunav.png" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.emunav.detail')}
@@ -806,7 +884,7 @@ const appDefs = window.appDefs = {
           <div class="preview-dot" style="background:#00ff41"></div>
           <div class="preview-url">angeldev2343.github.io/navascript</div>
         </div>
-        <img src="https://raw.githubusercontent.com/AngelDev2343/NavaScript/refs/heads/main/images/image.png" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
+        <img src="imagenes/previews/navascript.png" style="width:100%;height:auto;max-height:200px;object-fit:cover;display:block">
       </div>
       <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:10px;font-size:11px;color:var(--text-dim);line-height:1.8">
         ${window.t('proj.nava.detail')}
@@ -828,6 +906,23 @@ const appDefs = window.appDefs = {
         sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
         loading="lazy"></iframe>
     `
+  },
+
+  kid: {
+    title: '777.exe',
+    content: () => `
+      <div class="section-title">777.exe - VIRUS</div>
+      <p style="font-size:11px;color:var(--text-dim);line-height:1.7;margin-bottom:12px">${window.t('proj.kid.desc')}</p>
+      <iframe style="width:100%;aspect-ratio:16/9;border:none;border-radius:4px" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    `
+  },
+
+  music: {
+    title: 'Music Player',
+    content: () => `
+      <div class="section-title">AngelOS Music Player</div>
+      <iframe style="border-radius:12px;width:100%;height:352px;border:none" src="https://open.spotify.com/embed/playlist/6wnYRpQE9GMFk2WF8kc5AT?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    `
   }
 
 };
@@ -844,7 +939,7 @@ function handleTerminalInput(e) {
   inp.value = '';
 
   const line = document.createElement('div');
-  line.innerHTML = `<span class="prompt">angel@angelos:~$ </span><span class="cmd">${cmd}</span>`;
+  line.innerHTML = `<span class="prompt">angel@angelos:~$ </span><span class="cmd">${window.escapeHtml(cmd)}</span>`;
   out.appendChild(line);
 
   const res = document.createElement('div');
@@ -875,15 +970,30 @@ function handleTerminalInput(e) {
     const rainId = 'term-rain-' + Date.now();
     const wrap = document.createElement('div');
     wrap.className = 'term-rain-wrap';
-    wrap.innerHTML = `
-      <canvas id="${rainId}"></canvas>
-      <button onclick="
-        const c=document.getElementById('${rainId}');
-        if(c._rainStop){c._rainStop();this.textContent=window.t('term.rain.start');}
-        else{startTermRain('${rainId}');this.textContent=window.t('term.rain.stop');}
-      ">${window.t('term.rain.stop')}</button>
-      <span style="font-size:9px;color:var(--text-muted);margin-left:8px">${window.t('term.rain.active')}</span>
-    `;
+
+    const canvas = document.createElement('canvas');
+    canvas.id = rainId;
+
+    const btn = document.createElement('button');
+    btn.textContent = window.t('term.rain.stop');
+    btn.addEventListener('click', function () {
+      const c = document.getElementById(rainId);
+      if (c._rainStop) {
+        c._rainStop();
+        this.textContent = window.t('term.rain.start');
+      } else {
+        startTermRain(rainId);
+        this.textContent = window.t('term.rain.stop');
+      }
+    });
+
+    const status = document.createElement('span');
+    status.style.cssText = 'font-size:9px;color:var(--text-muted);margin-left:8px';
+    status.textContent = window.t('term.rain.status');
+
+    wrap.appendChild(canvas);
+    wrap.appendChild(btn);
+    wrap.appendChild(status);
     res.appendChild(wrap);
     out.appendChild(res);
     setTimeout(() => startTermRain(rainId), 50);
@@ -896,7 +1006,7 @@ function handleTerminalInput(e) {
     if (val === '__CLEAR__') { out.innerHTML = ''; }
     else if (val !== '__RAIN__') { res.innerHTML = val; out.appendChild(res); }
   } else {
-    res.innerHTML = `<span style="color:#ff4444">${window.t('term.err').replace('{cmd}', cmd)}</span>`;
+    res.innerHTML = `<span style="color:#ff4444">${window.t('term.err').replace('{cmd}', window.escapeHtml(cmd))}</span>`;
     out.appendChild(res);
   }
 
