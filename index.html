@@ -46,10 +46,12 @@
 
 <!-- ════════════════ BOOT SCREEN ════════════════ -->
 <div id="boot-screen" class="screen">
-  <div class="boot-header">AngelOS v1.0</div>
-  <div class="boot-log" id="boot-log"></div>
-  <div class="boot-progress">
-    <div class="boot-progress-bar" id="boot-bar"></div>
+  <div class="boot-box">
+    <div class="boot-header">AngelOS v1.0</div>
+    <div class="boot-log" id="boot-log"></div>
+    <div class="boot-progress">
+      <div class="boot-progress-bar" id="boot-bar"></div>
+    </div>
   </div>
 </div>
 
@@ -182,6 +184,10 @@
         <div class="d-icon-img" style="font-size:28px">🎵</div>
         <div class="d-icon-label">Music Player</div>
       </div>
+      <div class="d-icon" data-app="certificates" data-tooltip="certs.db — Certificates">
+        <div class="d-icon-img"><img src="imagenes/apps/certificates.png" alt="Certificates" width="40px" style="border-radius:4px"></div>
+        <div class="d-icon-label">certs.db</div>
+      </div>
     </div>
 
   </div>
@@ -214,6 +220,12 @@
   </div>
   <div class="start-menu-item" onclick="openWindow('skills');closeStartMenu()">
     <span>⚡</span> <span data-i18n="start.skills">Stack</span>
+  </div>
+  <div class="start-menu-item" onclick="openWindow('arcade');closeStartMenu()">
+    <span><img src="imagenes/apps/arcade.png" width="20" height="20" alt="" style="border-radius:4px"></span> <span data-i18n="start.arcade">Angel Dev Arcade</span>
+  </div>
+  <div class="start-menu-item" onclick="openWindow('certificates');closeStartMenu()">
+    <span><img src="imagenes/apps/certificates.png" width="20" height="20" alt="" style="border-radius:4px"></span> <span data-i18n="start.certificates">Certificates</span>
   </div>
   <div class="start-menu-item" onclick="openWindow('contact');closeStartMenu()">
     <span>📡</span> <span data-i18n="start.contact">Contact</span>

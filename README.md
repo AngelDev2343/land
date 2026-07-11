@@ -7,7 +7,7 @@ Portfolio de **Angel Salinas Pérez** (Full-Stack Developer, México) presentado
 ## Características
 
 - Experiencia desktop (`index.html`) y mobile (`mobile.html`) con detección automática
-- Boot animado con opción de saltar en visitas posteriores
+- Boot animado al iniciar
 - Selector de idioma EN/ES con persistencia en `localStorage`
 - Ventanas arrastrables, terminal interactiva, matrix rain y proyectos embebidos
 - PWA básica (manifest + service worker)

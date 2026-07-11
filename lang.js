@@ -21,6 +21,8 @@ window.LANG = {
     'start.about':      'About me',
     'start.projects':   'Projects',
     'start.skills':     'Stack',
+    'start.arcade':     'Angel Dev Arcade',
+    'start.certificates':'Certificates',
     'start.contact':    'Contact',
     'start.terminal':   'Terminal',
     'start.github':     'GitHub',
@@ -40,7 +42,6 @@ window.LANG = {
     'notif.langChanged':'Language updated',
 
     'ui.loading':       'Loading...',
-    'ui.skipBoot':      '[ SKIP BOOT ]',
 
     'panel.back':       '‹ Home',
     'app.about.title':  'about.exe',
@@ -48,6 +49,7 @@ window.LANG = {
     'app.skills.title': 'stack.db',
     'app.contact.title':'contact.sh',
     'app.terminal.title':'terminal',
+    'app.certificates.title': 'certs.db',
     'piano.notice':     '⚠ Full interactive version available on desktop.',
     'piano.open':       '[ Open Demo ]',
 
@@ -64,6 +66,22 @@ window.LANG = {
     'proj.emunav.detail':  'Play <span class="hi">Nintendo DS</span> games in the browser. Based on Desmond DS.',
     'proj.nava.detail':    'Programming language with <span class="hi">custom syntax</span>, web IDE and VS Code extension.',
 
+    // ── Window: Certificates ─────────────
+    'win.certificates.title': 'certs.db — Certificates',
+    'cert.section':           'CERTIFICATES — ~/credentials',
+    'cert.view':              '[ View PDF ]',
+    'cert.hide':              '[ Hide PDF ]',
+    'cert.open':              '[ Open PDF ]',
+    'cert.label.date':        'Date:',
+    'cert.label.duration':    'Duration:',
+    'cert.label.content':     'Content:',
+    'cert.label.serial':      'Serial:',
+    'cert.hours':             '{n} hours',
+    'cert.modules':           '{n} modules',
+    'cert.santander.issuer':  'Santander Open Academy',
+    'cert.santander.title':   'Responsible Prompting: Maximize AI in Your Business',
+    'cert.santander.partners':'Microsoft · Founderz',
+
     // ── Window: About ──────────────────────
     'win.about.title':  'about.exe — Angel Salinas Pérez',
     'about.label.name':     'Name',
@@ -72,12 +90,12 @@ window.LANG = {
     'about.label.email':    'Email',
     'about.label.status':   'Status',
     'about.label.version':  'Version',
-    'about.value.role':     'Full-Stack Developer',
+    'about.value.role':     'Software Developer',
     'about.value.location': 'Mexico',
     'about.value.status':   '● Available',
-    'about.bio': `Hi, I\'m Ángel. I turn business ideas into websites that work and help businesses grow.<br><br>
-Want to sell online? Need to organize your business better? Got an idea but don\'t know where to start?<br><br>
-I make it happen.`,
+    'about.bio': `Hey, I'm Angel! Software developer based in Mexico.<br><br>
+I build systems, applications, and tools across the stack — from low-level logic to full platforms. I understand the problem first, then choose the technology.<br><br>
+Practical focus: performance, clarity, and clean structure.`,
 
     // ── Window: Projects ───────────────────
     'win.projects.title': 'projects/ — Project Directory',
@@ -102,8 +120,11 @@ I make it happen.`,
     'proj.btn.iso':       '[ Download ISO ]',
     'proj.btn.ide':       '[ Web IDE ]',
     'proj.btn.buildkit':  '[ Build Kit ]',
+    'proj.noDesc':        'No description provided.',
+    'proj.empty':         'No public repositories found.',
+    'proj.fetchError':    'Could not load projects from GitHub API.',
 
-    // ── Window: Skills ─────────────────────
+    'term.projects.header': '{n} projects found:',
     'win.skills.title':   'Stack.db — Tech Stack',
     'skills.frontend':    '// FRONTEND',
     'skills.backend':     '// BACKEND',
@@ -115,7 +136,7 @@ I make it happen.`,
     'contact.copy':       '[click to copy]',
     'contact.open':       '[open →]',
     'contact.cta.title':  'Got a project in mind?',
-    'contact.cta.body':   'Tell me your idea and I\'ll help you make it happen.<br>Available for freelance projects and collaborations.',
+    'contact.cta.body':   'Apps, systems, tools, or custom solutions — tell me what you need.<br>Available for freelance projects and collaborations.',
 
     // ── Window: Terminal ───────────────────
     'win.terminal.title': 'terminal — angel@angelos:~$',
@@ -128,8 +149,8 @@ I make it happen.`,
     'term.cmd.clear':     '— Clear screen',
     'term.cmd.matrix':    '— ???',
     'term.cmd.rain':      '— Matrix rain in terminal',
-    'term.res.whoami':    'Angel Salinas Pérez — Full-Stack Developer<br>Mexico — 2026',
-    'term.res.projects':  '15 projects found:<br>  ├─ WhyAI          [JS, WebAI]<br>  ├─ Bio3D          [WebGL, Gestures]<br>  ├─ Cerimex        [PHP, MySQL]<br>  ├─ Twin Msngr     [Node.js, WS]<br>  ├─ Fender         [Python, Django]<br>  ├─ FlutterTool    [Windows, Batch]<br>  ├─ Digital Piano  [JS, Audio]<br>  ├─ MarketplaceOnly[Android, Kotlin]<br>  ├─ MitosisVR      [Godot 4, VR]<br>  ├─ DevOS          [Linux, Fedora]<br>  ├─ EmuNAV         [WebAssembly]<br>  ├─ NavaScript     [Language, IDE]<br>  ├─ 777.exe        [Windows, Virus]<br>  ├─ Arcade         [Games, Web]<br>  └─ Music Player   [Spotify, Web]',
+    'term.res.whoami':    'Angel Salinas Pérez — Software Developer<br>Mexico — 2026',
+    'term.res.projects':  '',
     'term.res.skills':    'Stack: HTML5, CSS3, JavaScript, TypeScript, Python,<br>Node.js, PHP, Django, MySQL, MongoDB, Git, VS Code,<br>FileZilla, XAMPP, Fedora Linux',
     'term.res.contact':   'Email:     23angelsperez@gmail.com<br>GitHub:    github.com/AngelDev2343<br>Instagram: @angl.perz',
     'term.res.github':    'Opening github.com/AngelDev2343...',
@@ -159,6 +180,8 @@ I make it happen.`,
     'start.about':      'Sobre mí',
     'start.projects':   'Proyectos',
     'start.skills':     'Stack',
+    'start.arcade':     'Angel Dev Arcade',
+    'start.certificates':'Certificados',
     'start.contact':    'Contacto',
     'start.terminal':   'Terminal',
     'start.github':     'GitHub',
@@ -178,7 +201,6 @@ I make it happen.`,
     'notif.langChanged':'Idioma actualizado',
 
     'ui.loading':       'Cargando...',
-    'ui.skipBoot':      '[ SALTAR BOOT ]',
 
     'panel.back':       '‹ Inicio',
     'app.about.title':  'about.exe',
@@ -186,6 +208,7 @@ I make it happen.`,
     'app.skills.title': 'stack.db',
     'app.contact.title':'contact.sh',
     'app.terminal.title':'terminal',
+    'app.certificates.title': 'certs.db',
     'piano.notice':     '⚠ La versión interactiva completa está en desktop.',
     'piano.open':       '[ Abrir Demo ]',
 
@@ -202,6 +225,22 @@ I make it happen.`,
     'proj.emunav.detail':  'Juega <span class="hi">Nintendo DS</span> en el navegador. Sin instalación.',
     'proj.nava.detail':    'Lenguaje con <span class="hi">sintaxis propia</span>, IDE web y extensión VS Code.',
 
+    // ── Window: Certificates ─────────────
+    'win.certificates.title': 'certs.db — Certificados',
+    'cert.section':           'CERTIFICADOS — ~/credentials',
+    'cert.view':              '[ Ver PDF ]',
+    'cert.hide':              '[ Ocultar PDF ]',
+    'cert.open':              '[ Abrir PDF ]',
+    'cert.label.date':        'Fecha:',
+    'cert.label.duration':    'Duración:',
+    'cert.label.content':     'Contenido:',
+    'cert.label.serial':      'Serial:',
+    'cert.hours':             '{n} horas',
+    'cert.modules':           '{n} módulos',
+    'cert.santander.issuer':  'Santander Open Academy',
+    'cert.santander.title':   'Prompting responsable: maximiza la IA en tu negocio',
+    'cert.santander.partners':'Microsoft · Founderz',
+
     // ── Window: About ──────────────────────
     'win.about.title':  'about.exe — Angel Salinas Pérez',
     'about.label.name':     'Nombre',
@@ -210,12 +249,12 @@ I make it happen.`,
     'about.label.email':    'Email',
     'about.label.status':   'Status',
     'about.label.version':  'Versión',
-    'about.value.role':     'Desarrollador Full-Stack',
+    'about.value.role':     'Desarrollador de Software',
     'about.value.location': 'México',
     'about.value.status':   '● Disponible',
-    'about.bio': `Hola, soy Ángel. Convierto ideas de negocio en páginas web que funcionan y hacen crecer negocios.<br><br>
-¿Quieres vender por internet? ¿Necesitas organizar mejor tu negocio? ¿Tienes una idea pero no sabes por dónde empezar?<br><br>
-Yo me encargo de hacerlo realidad.`,
+    'about.bio': `¡Hey, soy Angel! Desarrollador de software en México.<br><br>
+Construyo sistemas, aplicaciones y herramientas a distintos niveles — de lógica de bajo nivel a plataformas completas. Primero entiendo el problema, después elijo la tecnología.<br><br>
+Enfoque práctico: rendimiento, claridad y estructura limpia.`,
 
     // ── Window: Projects ───────────────────
     'win.projects.title': 'projects/ — Directorio de Proyectos',
@@ -240,8 +279,11 @@ Yo me encargo de hacerlo realidad.`,
     'proj.btn.iso':       '[ Descargar ISO ]',
     'proj.btn.ide':       '[ IDE Web ]',
     'proj.btn.buildkit':  '[ Build Kit ]',
+    'proj.noDesc':        'Sin descripción disponible.',
+    'proj.empty':         'No se encontraron repositorios públicos.',
+    'proj.fetchError':    'No se pudieron cargar los proyectos desde la API de GitHub.',
 
-    // ── Window: Skills ─────────────────────
+    'term.projects.header': '{n} proyectos encontrados:',
     'win.skills.title':   'Stack.db — Stack Tecnológico',
     'skills.frontend':    '// FRONTEND',
     'skills.backend':     '// BACKEND',
@@ -253,7 +295,7 @@ Yo me encargo de hacerlo realidad.`,
     'contact.copy':       '[click para copiar]',
     'contact.open':       '[abrir →]',
     'contact.cta.title':  '¿Tienes un proyecto en mente?',
-    'contact.cta.body':   'Cuéntame tu idea y te ayudo a hacerla realidad.<br>Disponible para proyectos freelance y colaboraciones.',
+    'contact.cta.body':   'Apps, sistemas, herramientas o soluciones a medida — cuéntame qué necesitas.<br>Disponible para proyectos freelance y colaboraciones.',
 
     // ── Window: Terminal ───────────────────
     'win.terminal.title': 'terminal — angel@angelos:~$',
@@ -266,8 +308,8 @@ Yo me encargo de hacerlo realidad.`,
     'term.cmd.clear':     '— Limpiar pantalla',
     'term.cmd.matrix':    '— ???',
     'term.cmd.rain':      '— Matrix rain en la terminal',
-    'term.res.whoami':    'Angel Salinas Pérez — Desarrollador Full-Stack<br>México — 2026',
-    'term.res.projects':  '15 proyectos encontrados:<br>  ├─ WhyAI          [JS, WebAI]<br>  ├─ Bio3D          [WebGL, Gestos]<br>  ├─ Cerimex        [PHP, MySQL]<br>  ├─ Twin Msgnr     [Node.js, WS]<br>  ├─ Fender         [Python, Django]<br>  ├─ FlutterTool    [Windows, Batch]<br>  ├─ Digital Piano  [JS, Audio]<br>  ├─ MarketplaceOnly[Android, Kotlin]<br>  ├─ MitosisVR      [Godot 4, VR]<br>  ├─ DevOS          [Linux, Fedora]<br>  ├─ EmuNAV         [WebAssembly]<br>  ├─ NavaScript     [Language, IDE]<br>  ├─ 777.exe        [Windows, Virus]<br>  ├─ Arcade         [Games, Web]<br>  └─ Music Player   [Spotify, Web]',
+    'term.res.whoami':    'Angel Salinas Pérez — Desarrollador de Software<br>México — 2026',
+    'term.res.projects':  '',
     'term.res.skills':    'Stack: HTML5, CSS3, JavaScript, TypeScript, Python,<br>Node.js, PHP, Django, MySQL, MongoDB, Git, VS Code,<br>FileZilla, XAMPP, Fedora Linux',
     'term.res.contact':   'Email:     23angelsperez@gmail.com<br>GitHub:    github.com/AngelDev2343<br>Instagram: @angl.perz',
     'term.res.github':    'Abriendo github.com/AngelDev2343...',
@@ -350,9 +392,12 @@ window.applyLanguage = function(lang) {
       if (titleEl) titleEl.textContent = typeof def.title === 'function' ? def.title() : def.title;
       const bodyEl = win.querySelector('.window-body');
       if (bodyEl) {
+        bodyEl.className = 'window-body' + (def.bodyClass ? ' ' + def.bodyClass : '');
         bodyEl.innerHTML = def.content();
         if (window.secureExternalLinks) window.secureExternalLinks(bodyEl);
-        if (window.initIframeLoaders) window.initIframeLoaders(bodyEl);
+        if (window.initIframeLoaders && window.shouldInitIframeLoaders(def)) window.initIframeLoaders(bodyEl);
+        if (id === 'projects') window.hydrateProjectsPanel(bodyEl);
+        if (id === 'certificates' && window.initCertificatesPanel) window.initCertificatesPanel(bodyEl);
       }
       if (id === 'terminal' && def.onOpen) def.onOpen();
     });
@@ -367,10 +412,14 @@ window.applyLanguage = function(lang) {
       const titleEl = document.getElementById('panel-title');
       const bodyEl = document.getElementById('panel-body');
       if (titleEl) titleEl.textContent = typeof def.title === 'function' ? def.title() : def.title;
-      if (bodyEl) bodyEl.innerHTML = def.content();
+      if (bodyEl) {
+        bodyEl.className = 'panel-body' + (def.panelClass ? ' ' + def.panelClass : '');
+        bodyEl.innerHTML = def.content();
+      }
       if (def.onOpen) setTimeout(def.onOpen, 50);
+      else if (currentApp === 'projects') window.hydrateProjectsPanel(bodyEl);
       window.secureExternalLinks(bodyEl);
-      window.initIframeLoaders(bodyEl);
+      if (window.initIframeLoaders && window.shouldInitIframeLoaders(def)) window.initIframeLoaders(bodyEl);
     }
   }
 

@@ -37,42 +37,12 @@ const bootMessages = [
   ];
   
   let bootIdx = 0;
-  let bootTimer = null;
   const logEl = document.getElementById('boot-log');
   const barEl = document.getElementById('boot-bar');
 
-  function showLogin() {
-    if (bootTimer) clearTimeout(bootTimer);
-    bootTimer = null;
-    const boot = document.getElementById('boot-screen');
-    boot.classList.add('hidden');
-    setTimeout(() => boot.classList.add('gone'), 700);
-    document.getElementById('login-screen').classList.remove('hidden');
-  }
-
-  function skipBoot() {
-    bootIdx = bootMessages.length;
-    if (logEl) logEl.innerHTML = '';
-    if (barEl) barEl.style.width = '100%';
-    window.markBootSkipped();
-    showLogin();
-  }
-
-  function initBootSkipButton() {
-    const boot = document.getElementById('boot-screen');
-    if (!boot || boot.querySelector('.boot-skip')) return;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'boot-skip';
-    btn.setAttribute('data-i18n', 'ui.skipBoot');
-    btn.textContent = window.t('ui.skipBoot');
-    btn.addEventListener('click', skipBoot);
-    boot.appendChild(btn);
-  }
-
   function bootStep() {
     if (bootIdx >= bootMessages.length) {
-      bootTimer = setTimeout(showLogin, 800);
+      setTimeout(showLogin, 800);
       return;
     }
     const { t, cl } = bootMessages[bootIdx];
@@ -87,14 +57,16 @@ const bootMessages = [
     bootIdx++;
 
     const delay = bootIdx < 10 ? 80 : bootIdx < 18 ? 50 : 120;
-    bootTimer = setTimeout(bootStep, delay);
+    setTimeout(bootStep, delay);
   }
 
-  if (window.shouldSkipBoot && window.shouldSkipBoot()) {
-    showLogin();
-  } else {
-    initBootSkipButton();
-    bootTimer = setTimeout(bootStep, 600);
+  setTimeout(bootStep, 600);
+
+  function showLogin() {
+    const boot = document.getElementById('boot-screen');
+    boot.classList.add('hidden');
+    setTimeout(() => boot.classList.add('gone'), 700);
+    document.getElementById('login-screen').classList.remove('hidden');
   }
   
   // ══════════════════════════════════════════
@@ -234,142 +206,11 @@ const bootMessages = [
     projects: {
       title: () => window.t('win.projects.title'),
       width: 700, height: 580,
-      content: () => `
-        <div class="section-title">// LS -LA ~/projects</div>
-        <div class="project-list">
-          <div class="project-card">
-            <h3>WhyAI</h3>
-            <p>${window.t('proj.whyai.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">JavaScript</span><span class="tag">WebAI</span><span class="tag">Browser</span><span class="tag">Privacy</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/WhyAI" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://why-ia.vercel.app/" target="_blank">[ Demo ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>Bio3D</h3>
-            <p>${window.t('proj.bio3d.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">WebGL</span><span class="tag">HandTracking</span><span class="tag">Three.js</span><span class="tag">ML</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/Bio3D" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://angeldev2343.github.io/Bio3D/" target="_blank">[ Demo ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>Cerimex</h3>
-            <p>${window.t('proj.cerimex.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">PHP</span><span class="tag">MySQL</span><span class="tag">JS</span><span class="tag">E-commerce</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/Cerimex" target="_blank">[ GitHub ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>Twin Messenger</h3>
-            <p>${window.t('proj.twin.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Node.js</span><span class="tag">WebSockets</span><span class="tag">Retro</span><span class="tag">PHP</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/TwinMessenger" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://twin-messenger.great-site.net/" target="_blank">[ Demo ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>Fender</h3>
-            <p>${window.t('proj.fender.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Python</span><span class="tag">Django</span><span class="tag">JS</span><span class="tag">UI/UX</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/Fender" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://angeldev2343.pythonanywhere.com/" target="_blank">[ Demo ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>FlutterTool</h3>
-            <p>${window.t('proj.flutter.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Windows</span><span class="tag">Batch</span><span class="tag">Flutter</span><span class="tag">Automation</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://github.com/AngelDev2343/FlutterTool/releases/download/v1.0/FlutterTool.bat" target="_blank">${window.t('proj.btn.download')}</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>Digital Piano</h3>
-            <p>${window.t('proj.piano.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">JavaScript</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Audio</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/DigitalPiano" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://AngelDev2343.github.io/DigitalPiano/index.html" target="_blank">[ Demo ]</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>MarketplaceOnly</h3>
-            <p>${window.t('proj.market.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Android</span><span class="tag">Kotlin</span><span class="tag">WebView</span><span class="tag">Privacy</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://github.com/AngelDev2343/MarketPlaceOnly/releases/download/1.1_Signed/MarketPlaceOnly-Signed.apk" target="_blank">${window.t('proj.btn.apk')}</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>MitosisVR</h3>
-            <p>${window.t('proj.mitosis.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Godot 4</span><span class="tag">VR</span><span class="tag">3D</span><span class="tag">Educativo</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/MitosisVR" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://mitosis1.netlify.app/main.html" target="_blank">${window.t('proj.btn.try')}</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>DevOS</h3>
-            <p>${window.t('proj.devos.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Linux</span><span class="tag">Fedora</span><span class="tag">XFCE</span><span class="tag">Live OS</span><span class="tag">AI</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/DevOS" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://github.com/AngelDev2343/DevOS/releases/download/Live_v1.0/DevOS-Live_v1.0.iso" target="_blank">${window.t('proj.btn.iso')}</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>EmuNAV</h3>
-            <p>${window.t('proj.emunav.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">WebAssembly</span><span class="tag">Emulator</span><span class="tag">JavaScript</span><span class="tag">Browser</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/EmuNAV/" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://angeldev2343.github.io/EmuNAV/" target="_blank">${window.t('proj.btn.try')}</a>
-            </div>
-          </div>
-          <div class="project-card">
-            <h3>NavaScript</h3>
-            <p>${window.t('proj.nava.desc')}</p>
-            <div style="margin-bottom:10px">
-              <span class="tag">Language</span><span class="tag">Interpreter</span><span class="tag">IDE</span><span class="tag">JavaScript</span>
-            </div>
-            <div class="project-links">
-              <a class="project-link" href="https://github.com/AngelDev2343/NavaScript" target="_blank">[ GitHub ]</a>
-              <a class="project-link" href="https://AngelDev2343.github.io/NavaScript" target="_blank">${window.t('proj.btn.ide')}</a>
-            </div>
-          </div>
-        </div>
-      `
+      content: () => window.renderProjectsPanelHTML(),
+      onOpen: function () {
+        const win = windows['projects'];
+        if (win) window.hydrateProjectsPanel(win);
+      }
     },
   
     skills: {
@@ -679,7 +520,7 @@ const bootMessages = [
   
       digitalpiano: {
           title: () => 'Digital Piano — Web Instrument',
-          width: 1100, height: 700,
+          width: 980, height: 620,
           content: () => `
               <div class="section-title">// Digital Piano — README.md</div>
               <div class="preview-browser">
@@ -690,14 +531,14 @@ const bootMessages = [
                   <div class="preview-url">angeldev2343.github.io / digital-piano</div>
               </div>
   
-                      <div style="width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px;">
-                          <iframe 
-                              src="https://AngelDev2343.github.io/DigitalPiano/index.html"
-                              style="width:100%; height:100%; border:none; display:block;"
-                              sandbox="allow-scripts allow-same-origin"
-                              scrolling="no">
-                          </iframe>
-                      </div>
+              <div class="preview-embed">
+                  <iframe
+                      class="preview-embed-frame"
+                      src="https://AngelDev2343.github.io/DigitalPiano/index.html"
+                      sandbox="allow-scripts allow-same-origin"
+                      scrolling="no"
+                      loading="lazy"></iframe>
+              </div>
               </div>
   
               <div style="padding:12px;background:var(--bg3);border-left:2px solid var(--green);margin-bottom:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
@@ -917,23 +758,31 @@ const bootMessages = [
 
     arcade: {
         title: () => 'Angel Dev Arcade',
-        width: 1280, height: 720,
-        content: () => `<iframe 
-            src="https://angelsperez.github.io/Angel-Dev-Arcade/"
-            style="width:100%; height:100%; border:none; display:block;"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
-            loading="lazy">
-        </iframe>`
+        width: 1150, height: 650,
+        bodyClass: 'window-body-fill window-body-flush',
+        content: () => `
+            <div class="window-embed-fill window-embed-fill--solo">
+                <div class="embed-flex-wrap">
+                    <iframe class="embed-flex-frame"
+                        src="https://angelsperez.github.io/Angel-Dev-Arcade/"
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+                        loading="lazy"></iframe>
+                </div>
+            </div>
+        `
     },
 
     kid: {
         title: () => '777.exe - A Windows Virus',
         width: 650, height: 520,
+        bodyClass: 'window-body-fill',
         content: () => `
-                <div style="display:flex;flex-direction:column;height:100%;gap:8px">
+                <div class="window-embed-fill">
                 <div class="section-title">777.exe - VIRUS</div>
                 <p style="font-size:11px;color:var(--text-dim);line-height:1.6;flex-shrink:0">${window.t('proj.kid.desc')}</p>
-                <iframe style="flex:1;min-height:240px;width:100%;border:none" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="embed-flex-wrap">
+                  <iframe class="embed-flex-frame" src="https://www.youtube.com/embed/iqOfGm2izQk?si=cQIfspLSQzluO20P" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
                 </div>
         `
     },
@@ -945,6 +794,16 @@ const bootMessages = [
                 <div class="section-title">AngelOS Music Player</div>
                 <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6wnYRpQE9GMFk2WF8kc5AT?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         `
+    },
+
+    certificates: {
+        title: () => window.t('win.certificates.title'),
+        width: 700, height: 620,
+        content: () => window.renderCertificatesPanelHTML(),
+        onOpen: function () {
+            const win = windows['certificates'];
+            if (win) window.initCertificatesPanel(win);
+        }
     }
   
   };
@@ -985,7 +844,7 @@ const bootMessages = [
         </div>
         <div class="window-title">${typeof def.title === 'function' ? def.title() : def.title}</div>
       </div>
-      <div class="window-body">${def.content()}</div>
+      <div class="window-body${def.bodyClass ? ' ' + def.bodyClass : ''}">${def.content()}</div>
       <div class="window-resize"></div>
     `;
   
@@ -1001,7 +860,7 @@ const bootMessages = [
   
     if (def.onOpen) def.onOpen();
     if (window.secureExternalLinks) window.secureExternalLinks(win);
-    if (window.initIframeLoaders) window.initIframeLoaders(win);
+    if (window.initIframeLoaders && window.shouldInitIframeLoaders(def)) window.initIframeLoaders(win);
   }
   
   function closeWindow(id) {
@@ -1094,32 +953,54 @@ const bootMessages = [
   // ══════════════════════════════════════════
   function makeDraggable(win) {
     const titlebar = win.querySelector('.window-titlebar');
-    let dragging = false, startX, startY, startL, startT;
-  
-    titlebar.addEventListener('mousedown', e => {
+    let dragging = false, startX, startY, startL, startT, activePointer = null;
+
+    function stopDrag() {
+      if (activePointer != null) {
+        try { titlebar.releasePointerCapture(activePointer); } catch (_) {}
+      }
+      dragging = false;
+      activePointer = null;
+    }
+
+    titlebar.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
       if (e.target.classList.contains('wc')) return;
       dragging = true;
-      startX = e.clientX; startY = e.clientY;
+      activePointer = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
       startL = parseInt(win.style.left) || 0;
-      startT = parseInt(win.style.top)  || 0;
+      startT = parseInt(win.style.top) || 0;
+      titlebar.setPointerCapture(e.pointerId);
       defocusAll();
       win.classList.add('focused');
       bringToFront(win);
       updateTaskbar();
       e.preventDefault();
     });
-  
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
+
+    titlebar.addEventListener('pointermove', e => {
+      if (!dragging || e.pointerId !== activePointer) return;
+      if (!(e.buttons & 1)) { stopDrag(); return; }
       const desktop = document.getElementById('desktop-area');
       const maxL = Math.max(0, desktop.clientWidth - win.offsetWidth);
       const maxT = Math.max(0, desktop.clientHeight - win.offsetHeight);
       win.style.left = Math.max(0, Math.min(maxL, startL + e.clientX - startX)) + 'px';
       win.style.top  = Math.max(0, Math.min(maxT, startT + e.clientY - startY)) + 'px';
     });
-  
-    document.addEventListener('mouseup', () => { dragging = false; });
-  
+
+    titlebar.addEventListener('pointerup', e => {
+      if (e.pointerId === activePointer) stopDrag();
+    });
+    titlebar.addEventListener('pointercancel', e => {
+      if (e.pointerId === activePointer) stopDrag();
+    });
+    titlebar.addEventListener('lostpointercapture', () => {
+      dragging = false;
+      activePointer = null;
+    });
+
     win.addEventListener('mousedown', () => {
       if (!win.classList.contains('focused')) {
         defocusAll();
@@ -1132,24 +1013,48 @@ const bootMessages = [
   
   function makeResizable(win) {
     const handle = win.querySelector('.window-resize');
-    let resizing = false, startX, startY, startW, startH;
-  
-    handle.addEventListener('mousedown', e => {
+    let resizing = false, startX, startY, startW, startH, activePointer = null;
+
+    function stopResize() {
+      if (activePointer != null) {
+        try { handle.releasePointerCapture(activePointer); } catch (_) {}
+      }
+      resizing = false;
+      activePointer = null;
+    }
+
+    handle.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
       resizing = true;
-      startX = e.clientX; startY = e.clientY;
-      startW = win.offsetWidth; startH = win.offsetHeight;
-      e.preventDefault(); e.stopPropagation();
+      activePointer = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = win.offsetWidth;
+      startH = win.offsetHeight;
+      handle.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      e.stopPropagation();
     });
-  
-    document.addEventListener('mousemove', e => {
-      if (!resizing) return;
+
+    handle.addEventListener('pointermove', e => {
+      if (!resizing || e.pointerId !== activePointer) return;
+      if (!(e.buttons & 1)) { stopResize(); return; }
       const newW = Math.max(300, startW + e.clientX - startX);
       const newH = Math.max(200, startH + e.clientY - startY);
       win.style.width  = newW + 'px';
       win.style.height = newH + 'px';
     });
-  
-    document.addEventListener('mouseup', () => { resizing = false; });
+
+    handle.addEventListener('pointerup', e => {
+      if (e.pointerId === activePointer) stopResize();
+    });
+    handle.addEventListener('pointercancel', e => {
+      if (e.pointerId === activePointer) stopResize();
+    });
+    handle.addEventListener('lostpointercapture', () => {
+      resizing = false;
+      activePointer = null;
+    });
   }
   
   // ══════════════════════════════════════════
@@ -1210,7 +1115,6 @@ const bootMessages = [
   
     const responses = {
       whoami:   () => `<span class="out">${window.t('term.res.whoami')}</span>`,
-      projects: () => `<span class="out">${window.t('term.res.projects')}</span>`,
       skills:   () => `<span class="out">${window.t('term.res.skills')}</span>`,
       contact:  () => `<span class="out">${window.t('term.res.contact')}</span>`,
       github:   () => `<span class="out">${window.t('term.res.github')}</span>`,
@@ -1267,6 +1171,8 @@ const bootMessages = [
 
       setTimeout(() => startTermRain(rainId), 50);
 
+    } else if (cmd === 'projects') {
+      window.runTerminalProjectsCommand(res, out, out.closest('.window-body'));
     } else if (cmd === 'github') {
       window.open('https://github.com/AngelDev2343', '_blank');
       res.innerHTML = responses.github();
@@ -1361,29 +1267,57 @@ const bootMessages = [
   });
   
   // ══════════════════════════════════════════
-  //  DESKTOP ICON TOOLTIPS
+  //  DESKTOP ICON TOOLTIPS (delayed hover)
   // ══════════════════════════════════════════
   const tooltipEl = document.getElementById('tooltip');
+  const TOOLTIP_DELAY_MS = 650;
+  let tooltipTimer = null;
+  let tooltipPendingLabel = '';
+
+  function positionTooltip(e) {
+    if (!tooltipEl) return;
+    tooltipEl.style.left = (e.clientX + 14) + 'px';
+    tooltipEl.style.top  = (e.clientY + 14) + 'px';
+  }
 
   function showTooltip(e, text) {
     if (!tooltipEl || !text) return;
     tooltipEl.textContent = text;
-    tooltipEl.style.left = (e.clientX + 14) + 'px';
-    tooltipEl.style.top  = (e.clientY + 14) + 'px';
+    positionTooltip(e);
     tooltipEl.classList.add('show');
   }
 
+  function cancelTooltipTimer() {
+    if (tooltipTimer) {
+      clearTimeout(tooltipTimer);
+      tooltipTimer = null;
+    }
+    tooltipPendingLabel = '';
+  }
+
   function hideTooltip() {
+    cancelTooltipTimer();
     if (tooltipEl) tooltipEl.classList.remove('show');
+  }
+
+  function scheduleTooltip(e, text) {
+    if (!text) return;
+    cancelTooltipTimer();
+    tooltipPendingLabel = text;
+    const x = e.clientX;
+    const y = e.clientY;
+    tooltipTimer = setTimeout(function () {
+      tooltipTimer = null;
+      showTooltip({ clientX: x, clientY: y }, tooltipPendingLabel);
+    }, TOOLTIP_DELAY_MS);
   }
 
   document.querySelectorAll('.d-icon[data-app]').forEach(icon => {
     const label = icon.dataset.tooltip || icon.querySelector('.d-icon-label')?.textContent?.trim();
-    icon.addEventListener('mouseenter', e => showTooltip(e, label));
+    icon.addEventListener('mouseenter', e => scheduleTooltip(e, label));
     icon.addEventListener('mousemove', e => {
-      if (!tooltipEl?.classList.contains('show')) return;
-      tooltipEl.style.left = (e.clientX + 14) + 'px';
-      tooltipEl.style.top  = (e.clientY + 14) + 'px';
+      if (tooltipEl?.classList.contains('show')) positionTooltip(e);
     });
     icon.addEventListener('mouseleave', hideTooltip);
+    icon.addEventListener('click', hideTooltip);
   });
